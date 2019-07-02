@@ -10,14 +10,14 @@ import UIKit
 import SpriteKit
 import GameplayKit
 
-class StairsGameViewController: UIViewController {
+class Level1GameViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         if let view = self.view as! SKView? {
             // Load the SKScene from 'GameScene.sks'
-            if let scene = SKScene(fileNamed: "StairsGameScene") {
+            if let scene = SKScene(fileNamed: "Level1GameScene") {
                 // Set the scale mode to scale to fit the window
                 scene.scaleMode = .aspectFill
                 
