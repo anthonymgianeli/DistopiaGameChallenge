@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0BF13B9922CBB1AF007DACD8 /* Level1.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0BF13B9822CBB1AF007DACD8 /* Level1.sks */; };
+		0BF13B9B22CBB1DD007DACD8 /* StairsGameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF13B9A22CBB1DD007DACD8 /* StairsGameScene.swift */; };
+		0BF13B9D22CBB1EB007DACD8 /* StairsGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF13B9C22CBB1EB007DACD8 /* StairsGameViewController.swift */; };
+		0BF13B9F22CBB210007DACD8 /* Level1.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0BF13B9E22CBB210007DACD8 /* Level1.xcassets */; };
+		0BF13BA322CBB2C8007DACD8 /* Player.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0BF13BA222CBB2C8007DACD8 /* Player.xcassets */; };
 		3CBF82E422CA39F40089A5BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBF82E322CA39F40089A5BE /* AppDelegate.swift */; };
 		3CBF82EA22CA39F40089A5BE /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBF82E922CA39F40089A5BE /* GameScene.swift */; };
 		3CBF82EC22CA39F40089A5BE /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBF82EB22CA39F40089A5BE /* GameViewController.swift */; };
@@ -14,24 +19,26 @@
 		3CBF82F122CA39F60089A5BE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF82F022CA39F60089A5BE /* Images.xcassets */; };
 		3CBF82F422CA39F60089A5BE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF82F222CA39F60089A5BE /* LaunchScreen.storyboard */; };
 		3CBF82FF22CB88750089A5BE /* MovimentedPerson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBF82FE22CB88750089A5BE /* MovimentedPerson.swift */; };
-		3CBF830822CBA1700089A5BE /* Level1.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF830722CBA1700089A5BE /* Level1.xcassets */; };
 		3CBF830A22CBA1B30089A5BE /* Level2.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF830922CBA1B30089A5BE /* Level2.xcassets */; };
 		3CBF830C22CBA1D30089A5BE /* Level3.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF830B22CBA1D30089A5BE /* Level3.xcassets */; };
 		3CBF831022CBA27D0089A5BE /* Level1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF830F22CBA27D0089A5BE /* Level1.plist */; };
 		3CBF831222CBA28E0089A5BE /* Level2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF831122CBA28E0089A5BE /* Level2.plist */; };
 		3CBF831422CBA2A00089A5BE /* Level3.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF831322CBA2A00089A5BE /* Level3.plist */; };
 		3CBF831822CBA3C40089A5BE /* Level2.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF831722CBA3C40089A5BE /* Level2.sks */; };
-		3CBF831A22CBA3DE0089A5BE /* Level1.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF831922CBA3DE0089A5BE /* Level1.sks */; };
 		3CBF831C22CBA3EC0089A5BE /* Level3.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF831B22CBA3EC0089A5BE /* Level3.sks */; };
 		3CBF832022CBA5CD0089A5BE /* Player.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF831F22CBA5CD0089A5BE /* Player.sks */; };
 		3CBF832222CBA5F00089A5BE /* Security.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF832122CBA5F00089A5BE /* Security.sks */; };
-		3CBF832422CBA6010089A5BE /* Player.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF832322CBA6010089A5BE /* Player.xcassets */; };
 		3CBF832622CBA6120089A5BE /* Security.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF832522CBA6120089A5BE /* Security.xcassets */; };
 		3CBF832822CBA6280089A5BE /* Player.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF832722CBA6280089A5BE /* Player.plist */; };
 		3CBF832A22CBA6390089A5BE /* Security.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF832922CBA6390089A5BE /* Security.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0BF13B9822CBB1AF007DACD8 /* Level1.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level1.sks; sourceTree = "<group>"; };
+		0BF13B9A22CBB1DD007DACD8 /* StairsGameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StairsGameScene.swift; sourceTree = "<group>"; };
+		0BF13B9C22CBB1EB007DACD8 /* StairsGameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StairsGameViewController.swift; sourceTree = "<group>"; };
+		0BF13B9E22CBB210007DACD8 /* Level1.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Level1.xcassets; sourceTree = "<group>"; };
+		0BF13BA222CBB2C8007DACD8 /* Player.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Player.xcassets; sourceTree = "<group>"; };
 		3CBF82E022CA39F40089A5BE /* DistopiaGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DistopiaGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CBF82E322CA39F40089A5BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3CBF82E922CA39F40089A5BE /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -41,18 +48,15 @@
 		3CBF82F322CA39F60089A5BE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3CBF82F522CA39F60089A5BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3CBF82FE22CB88750089A5BE /* MovimentedPerson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovimentedPerson.swift; sourceTree = "<group>"; };
-		3CBF830722CBA1700089A5BE /* Level1.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Level1.xcassets; sourceTree = "<group>"; };
 		3CBF830922CBA1B30089A5BE /* Level2.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Level2.xcassets; sourceTree = "<group>"; };
 		3CBF830B22CBA1D30089A5BE /* Level3.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Level3.xcassets; sourceTree = "<group>"; };
 		3CBF830F22CBA27D0089A5BE /* Level1.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Level1.plist; sourceTree = "<group>"; };
 		3CBF831122CBA28E0089A5BE /* Level2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Level2.plist; sourceTree = "<group>"; };
 		3CBF831322CBA2A00089A5BE /* Level3.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Level3.plist; sourceTree = "<group>"; };
 		3CBF831722CBA3C40089A5BE /* Level2.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level2.sks; sourceTree = "<group>"; };
-		3CBF831922CBA3DE0089A5BE /* Level1.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level1.sks; sourceTree = "<group>"; };
 		3CBF831B22CBA3EC0089A5BE /* Level3.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level3.sks; sourceTree = "<group>"; };
 		3CBF831F22CBA5CD0089A5BE /* Player.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Player.sks; sourceTree = "<group>"; };
 		3CBF832122CBA5F00089A5BE /* Security.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Security.sks; sourceTree = "<group>"; };
-		3CBF832322CBA6010089A5BE /* Player.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Player.xcassets; sourceTree = "<group>"; };
 		3CBF832522CBA6120089A5BE /* Security.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Security.xcassets; sourceTree = "<group>"; };
 		3CBF832722CBA6280089A5BE /* Player.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Player.plist; sourceTree = "<group>"; };
 		3CBF832922CBA6390089A5BE /* Security.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Security.plist; sourceTree = "<group>"; };
@@ -69,6 +73,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0BF13BA022CBB262007DACD8 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				0BF13B9C22CBB1EB007DACD8 /* StairsGameViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		0BF13BA122CBB273007DACD8 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				0BF13B9A22CBB1DD007DACD8 /* StairsGameScene.swift */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
 		3CBF82D722CA39F40089A5BE = {
 			isa = PBXGroup;
 			children = (
@@ -103,6 +123,8 @@
 		3CBF82FB22CB86CF0089A5BE /* Stages */ = {
 			isa = PBXGroup;
 			children = (
+				0BF13BA122CBB273007DACD8 /* Scenes */,
+				0BF13BA022CBB262007DACD8 /* ViewControllers */,
 			);
 			path = Stages;
 			sourceTree = "<group>";
@@ -140,9 +162,9 @@
 		3CBF830222CBA0D90089A5BE /* Level1 */ = {
 			isa = PBXGroup;
 			children = (
-				3CBF830722CBA1700089A5BE /* Level1.xcassets */,
+				0BF13B9822CBB1AF007DACD8 /* Level1.sks */,
 				3CBF830F22CBA27D0089A5BE /* Level1.plist */,
-				3CBF831922CBA3DE0089A5BE /* Level1.sks */,
+				0BF13B9E22CBB210007DACD8 /* Level1.xcassets */,
 			);
 			path = Level1;
 			sourceTree = "<group>";
@@ -171,8 +193,8 @@
 			isa = PBXGroup;
 			children = (
 				3CBF831F22CBA5CD0089A5BE /* Player.sks */,
-				3CBF832322CBA6010089A5BE /* Player.xcassets */,
 				3CBF832722CBA6280089A5BE /* Player.plist */,
+				0BF13BA222CBB2C8007DACD8 /* Player.xcassets */,
 			);
 			path = Player;
 			sourceTree = "<group>";
@@ -246,22 +268,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				3CBF831C22CBA3EC0089A5BE /* Level3.sks in Resources */,
-				3CBF832422CBA6010089A5BE /* Player.xcassets in Resources */,
 				3CBF832222CBA5F00089A5BE /* Security.sks in Resources */,
 				3CBF831222CBA28E0089A5BE /* Level2.plist in Resources */,
-				3CBF830822CBA1700089A5BE /* Level1.xcassets in Resources */,
 				3CBF832622CBA6120089A5BE /* Security.xcassets in Resources */,
 				3CBF82EF22CA39F40089A5BE /* Main.storyboard in Resources */,
 				3CBF830C22CBA1D30089A5BE /* Level3.xcassets in Resources */,
+				0BF13B9922CBB1AF007DACD8 /* Level1.sks in Resources */,
 				3CBF831822CBA3C40089A5BE /* Level2.sks in Resources */,
 				3CBF831022CBA27D0089A5BE /* Level1.plist in Resources */,
 				3CBF832A22CBA6390089A5BE /* Security.plist in Resources */,
+				0BF13BA322CBB2C8007DACD8 /* Player.xcassets in Resources */,
 				3CBF82F122CA39F60089A5BE /* Images.xcassets in Resources */,
 				3CBF82F422CA39F60089A5BE /* LaunchScreen.storyboard in Resources */,
 				3CBF832022CBA5CD0089A5BE /* Player.sks in Resources */,
 				3CBF830A22CBA1B30089A5BE /* Level2.xcassets in Resources */,
-				3CBF831A22CBA3DE0089A5BE /* Level1.sks in Resources */,
 				3CBF832822CBA6280089A5BE /* Player.plist in Resources */,
+				0BF13B9F22CBB210007DACD8 /* Level1.xcassets in Resources */,
 				3CBF831422CBA2A00089A5BE /* Level3.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -275,7 +297,9 @@
 			files = (
 				3CBF82FF22CB88750089A5BE /* MovimentedPerson.swift in Sources */,
 				3CBF82EA22CA39F40089A5BE /* GameScene.swift in Sources */,
+				0BF13B9D22CBB1EB007DACD8 /* StairsGameViewController.swift in Sources */,
 				3CBF82EC22CA39F40089A5BE /* GameViewController.swift in Sources */,
+				0BF13B9B22CBB1DD007DACD8 /* StairsGameScene.swift in Sources */,
 				3CBF82E422CA39F40089A5BE /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
