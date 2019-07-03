@@ -7,11 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0BF13B9922CBB1AF007DACD8 /* Level1.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0BF13B9822CBB1AF007DACD8 /* Level1.sks */; };
-		0BF13B9B22CBB1DD007DACD8 /* StairsGameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF13B9A22CBB1DD007DACD8 /* StairsGameScene.swift */; };
-		0BF13B9D22CBB1EB007DACD8 /* StairsGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF13B9C22CBB1EB007DACD8 /* StairsGameViewController.swift */; };
+		0BF13B9922CBB1AF007DACD8 /* Level1GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0BF13B9822CBB1AF007DACD8 /* Level1GameScene.sks */; };
+		0BF13B9B22CBB1DD007DACD8 /* Level1GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF13B9A22CBB1DD007DACD8 /* Level1GameScene.swift */; };
+		0BF13B9D22CBB1EB007DACD8 /* Level1GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF13B9C22CBB1EB007DACD8 /* Level1GameViewController.swift */; };
 		0BF13B9F22CBB210007DACD8 /* Level1.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0BF13B9E22CBB210007DACD8 /* Level1.xcassets */; };
 		0BF13BA322CBB2C8007DACD8 /* Player.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0BF13BA222CBB2C8007DACD8 /* Player.xcassets */; };
+		0BF13BA522CBB711007DACD8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BF13BA422CBB711007DACD8 /* Default-568h@2x.png */; };
+		159E063D22CBC12B00911F35 /* Level2GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159E063C22CBC12B00911F35 /* Level2GameScene.swift */; };
+		159E063F22CBC25400911F35 /* Level2GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159E063E22CBC25400911F35 /* Level2GameViewController.swift */; };
 		3CBF82E422CA39F40089A5BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBF82E322CA39F40089A5BE /* AppDelegate.swift */; };
 		3CBF82EA22CA39F40089A5BE /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBF82E922CA39F40089A5BE /* GameScene.swift */; };
 		3CBF82EC22CA39F40089A5BE /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBF82EB22CA39F40089A5BE /* GameViewController.swift */; };
@@ -24,7 +27,7 @@
 		3CBF831022CBA27D0089A5BE /* Level1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF830F22CBA27D0089A5BE /* Level1.plist */; };
 		3CBF831222CBA28E0089A5BE /* Level2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF831122CBA28E0089A5BE /* Level2.plist */; };
 		3CBF831422CBA2A00089A5BE /* Level3.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF831322CBA2A00089A5BE /* Level3.plist */; };
-		3CBF831822CBA3C40089A5BE /* Level2.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF831722CBA3C40089A5BE /* Level2.sks */; };
+		3CBF831822CBA3C40089A5BE /* Level2GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF831722CBA3C40089A5BE /* Level2GameScene.sks */; };
 		3CBF831C22CBA3EC0089A5BE /* Level3.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF831B22CBA3EC0089A5BE /* Level3.sks */; };
 		3CBF832022CBA5CD0089A5BE /* Player.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF831F22CBA5CD0089A5BE /* Player.sks */; };
 		3CBF832222CBA5F00089A5BE /* Security.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3CBF832122CBA5F00089A5BE /* Security.sks */; };
@@ -34,11 +37,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0BF13B9822CBB1AF007DACD8 /* Level1.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level1.sks; sourceTree = "<group>"; };
-		0BF13B9A22CBB1DD007DACD8 /* StairsGameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StairsGameScene.swift; sourceTree = "<group>"; };
-		0BF13B9C22CBB1EB007DACD8 /* StairsGameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StairsGameViewController.swift; sourceTree = "<group>"; };
+		0BF13B9822CBB1AF007DACD8 /* Level1GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level1GameScene.sks; sourceTree = "<group>"; };
+		0BF13B9A22CBB1DD007DACD8 /* Level1GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Level1GameScene.swift; sourceTree = "<group>"; };
+		0BF13B9C22CBB1EB007DACD8 /* Level1GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Level1GameViewController.swift; sourceTree = "<group>"; };
 		0BF13B9E22CBB210007DACD8 /* Level1.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Level1.xcassets; sourceTree = "<group>"; };
 		0BF13BA222CBB2C8007DACD8 /* Player.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Player.xcassets; sourceTree = "<group>"; };
+		0BF13BA422CBB711007DACD8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		159E063C22CBC12B00911F35 /* Level2GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Level2GameScene.swift; sourceTree = "<group>"; };
+		159E063E22CBC25400911F35 /* Level2GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Level2GameViewController.swift; sourceTree = "<group>"; };
 		3CBF82E022CA39F40089A5BE /* DistopiaGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DistopiaGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CBF82E322CA39F40089A5BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3CBF82E922CA39F40089A5BE /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -53,7 +59,7 @@
 		3CBF830F22CBA27D0089A5BE /* Level1.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Level1.plist; sourceTree = "<group>"; };
 		3CBF831122CBA28E0089A5BE /* Level2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Level2.plist; sourceTree = "<group>"; };
 		3CBF831322CBA2A00089A5BE /* Level3.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Level3.plist; sourceTree = "<group>"; };
-		3CBF831722CBA3C40089A5BE /* Level2.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level2.sks; sourceTree = "<group>"; };
+		3CBF831722CBA3C40089A5BE /* Level2GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level2GameScene.sks; sourceTree = "<group>"; };
 		3CBF831B22CBA3EC0089A5BE /* Level3.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level3.sks; sourceTree = "<group>"; };
 		3CBF831F22CBA5CD0089A5BE /* Player.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Player.sks; sourceTree = "<group>"; };
 		3CBF832122CBA5F00089A5BE /* Security.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Security.sks; sourceTree = "<group>"; };
@@ -76,7 +82,8 @@
 		0BF13BA022CBB262007DACD8 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				0BF13B9C22CBB1EB007DACD8 /* StairsGameViewController.swift */,
+				0BF13B9C22CBB1EB007DACD8 /* Level1GameViewController.swift */,
+				159E063E22CBC25400911F35 /* Level2GameViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -84,7 +91,8 @@
 		0BF13BA122CBB273007DACD8 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
-				0BF13B9A22CBB1DD007DACD8 /* StairsGameScene.swift */,
+				0BF13B9A22CBB1DD007DACD8 /* Level1GameScene.swift */,
+				159E063C22CBC12B00911F35 /* Level2GameScene.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -92,6 +100,7 @@
 		3CBF82D722CA39F40089A5BE = {
 			isa = PBXGroup;
 			children = (
+				0BF13BA422CBB711007DACD8 /* Default-568h@2x.png */,
 				3CBF82E222CA39F40089A5BE /* DistopiaGame */,
 				3CBF82E122CA39F40089A5BE /* Products */,
 			);
@@ -116,6 +125,7 @@
 				3CBF82EB22CA39F40089A5BE /* GameViewController.swift */,
 				3CBF82ED22CA39F40089A5BE /* Main.storyboard */,
 				3CBF82F222CA39F60089A5BE /* LaunchScreen.storyboard */,
+				3CBF82F522CA39F60089A5BE /* Info.plist */,
 			);
 			path = DistopiaGame;
 			sourceTree = "<group>";
@@ -141,7 +151,6 @@
 			isa = PBXGroup;
 			children = (
 				3CBF82F022CA39F60089A5BE /* Images.xcassets */,
-				3CBF82F522CA39F60089A5BE /* Info.plist */,
 				3CBF830122CBA0C30089A5BE /* Scenes */,
 				3CBF831D22CBA5820089A5BE /* Player */,
 				3CBF831E22CBA5920089A5BE /* Security */,
@@ -162,7 +171,7 @@
 		3CBF830222CBA0D90089A5BE /* Level1 */ = {
 			isa = PBXGroup;
 			children = (
-				0BF13B9822CBB1AF007DACD8 /* Level1.sks */,
+				0BF13B9822CBB1AF007DACD8 /* Level1GameScene.sks */,
 				3CBF830F22CBA27D0089A5BE /* Level1.plist */,
 				0BF13B9E22CBB210007DACD8 /* Level1.xcassets */,
 			);
@@ -174,7 +183,7 @@
 			children = (
 				3CBF830922CBA1B30089A5BE /* Level2.xcassets */,
 				3CBF831122CBA28E0089A5BE /* Level2.plist */,
-				3CBF831722CBA3C40089A5BE /* Level2.sks */,
+				3CBF831722CBA3C40089A5BE /* Level2GameScene.sks */,
 			);
 			path = Level2;
 			sourceTree = "<group>";
@@ -273,12 +282,13 @@
 				3CBF832622CBA6120089A5BE /* Security.xcassets in Resources */,
 				3CBF82EF22CA39F40089A5BE /* Main.storyboard in Resources */,
 				3CBF830C22CBA1D30089A5BE /* Level3.xcassets in Resources */,
-				0BF13B9922CBB1AF007DACD8 /* Level1.sks in Resources */,
-				3CBF831822CBA3C40089A5BE /* Level2.sks in Resources */,
+				0BF13B9922CBB1AF007DACD8 /* Level1GameScene.sks in Resources */,
+				3CBF831822CBA3C40089A5BE /* Level2GameScene.sks in Resources */,
 				3CBF831022CBA27D0089A5BE /* Level1.plist in Resources */,
 				3CBF832A22CBA6390089A5BE /* Security.plist in Resources */,
 				0BF13BA322CBB2C8007DACD8 /* Player.xcassets in Resources */,
 				3CBF82F122CA39F60089A5BE /* Images.xcassets in Resources */,
+				0BF13BA522CBB711007DACD8 /* Default-568h@2x.png in Resources */,
 				3CBF82F422CA39F60089A5BE /* LaunchScreen.storyboard in Resources */,
 				3CBF832022CBA5CD0089A5BE /* Player.sks in Resources */,
 				3CBF830A22CBA1B30089A5BE /* Level2.xcassets in Resources */,
@@ -297,9 +307,11 @@
 			files = (
 				3CBF82FF22CB88750089A5BE /* MovimentedPerson.swift in Sources */,
 				3CBF82EA22CA39F40089A5BE /* GameScene.swift in Sources */,
-				0BF13B9D22CBB1EB007DACD8 /* StairsGameViewController.swift in Sources */,
+				159E063D22CBC12B00911F35 /* Level2GameScene.swift in Sources */,
+				159E063F22CBC25400911F35 /* Level2GameViewController.swift in Sources */,
+				0BF13B9D22CBB1EB007DACD8 /* Level1GameViewController.swift in Sources */,
 				3CBF82EC22CA39F40089A5BE /* GameViewController.swift in Sources */,
-				0BF13B9B22CBB1DD007DACD8 /* StairsGameScene.swift in Sources */,
+				0BF13B9B22CBB1DD007DACD8 /* Level1GameScene.swift in Sources */,
 				3CBF82E422CA39F40089A5BE /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -447,7 +459,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = B8QFK7C948;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = DistopiaGame/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -465,7 +477,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = B8QFK7C948;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = DistopiaGame/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
