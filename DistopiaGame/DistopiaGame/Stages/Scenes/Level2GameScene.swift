@@ -20,7 +20,7 @@ class Level2GameScene: SKScene {
         
         let rotateAnti = SKAction.rotate(byAngle: .pi/6, duration: 0.7)
         let rotateClockwise = SKAction.rotate(byAngle: -(.pi/6), duration: 0.7)
-        let sequence = SKAction.sequence([rotateAnti, rotateClockwise])
+        let sequence = SKAction.sequence([rotateClockwise, rotateAnti])
         let repeatAction = SKAction.repeatForever(sequence)
         cameraImage!.run(repeatAction)
         
