@@ -12,65 +12,69 @@ import GameplayKit
 class Level1GameScene: SKScene {
     
     var character: SKSpriteNode?
-    var movingTouch: CGPoint!
+    var fingerLocation: CGPoint!
     var firstTouch: CGPoint!
-    var movingCenter: CGPoint!
-    var movimentConstant: CGFloat = 20
+    var center: CGPoint!
     let screenSize: CGRect = UIScreen.main.bounds
+    var maxDx: CGFloat!
+    var isMoving = false
     
     override func didMove(to view: SKView) {
         self.character = self.childNode(withName: "character") as? SKSpriteNode
         
-        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(jump(_:)))
-        swipeUp.direction = .up
-        view.addGestureRecognizer(swipeUp)
-        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        isMoving = true
         for touch in touches {
             firstTouch = touch.location(in: self)
-            movingCenter = touch.location(in: self)
+            center = firstTouch
         }
     }
-
+    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        
-        
         for touch in touches {
-            movingTouch = touch.location(in: self)
-
-            if Double(movingTouch.x) > Double(movingCenter.x) {
-                moveRight()
-                movingCenter.x = movingTouch.x - 0.1
-            } else if Double(movingTouch.x) < Double(movingCenter.x) {
-                moveLeft()
-                movingCenter.x = movingTouch.x + 0.1
-            }
+            fingerLocation = touch.location(in: self)
+            maxDx = screenSize.width/6
+            let fingerDx = fingerLocation.x - firstTouch.x
             
+            if fingerDx >= maxDx  {
+                let difference = fingerDx - maxDx
+                center.x = center.x + difference
+            } else if fingerDx <= -maxDx {
+                let difference = abs(fingerDx - maxDx)
+                center.x = center.x - difference
+            }
         }
-
     }
     
-    func moveRight() {
-        let maxFingerMoviment = screenSize.width/4
-        let fingerDistance = movingTouch.x - movingCenter.x
-        let velocityConstant = fingerDistance/maxFingerMoviment
-        
-        let moveRight = SKAction.moveBy(x: movimentConstant * velocityConstant, y: 0, duration: 0.5)
-        character?.run(moveRight)
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // Stop node from moving to touch
+        isMoving = false
     }
     
-    func moveLeft() {
-        let moveLeft = SKAction.moveBy(x: -movimentConstant, y: 0, duration: 1)
-        character?.run(moveLeft)
-        
+    override func update(_ currentTime: TimeInterval) {
+        // Called before each frame is rendered
+        if isMoving {
+            moveCharacterHorizontal()
+        }
     }
     
-    @objc func jump(_ sender: UISwipeGestureRecognizer) {
-        let jump = SKAction.moveBy(x: 0, y: 10, duration: 1)
-        character?.run(jump)
+    // Move the node to the location of the touch
+    func moveCharacterHorizontal() {
+        maxDx = screenSize.width/6
+        // Compute vector components in direction of the touch
+        var dx = fingerLocation.x - firstTouch.x
+        // How fast to move the node. Adjust this as needed
+        let speed: CGFloat = 0.01
+        // Scale vector
+        if dx >= maxDx {
+            dx = maxDx
+        } else if dx <= -maxDx {
+            dx = -maxDx
+        }
+        dx = dx * speed
+        character!.position = CGPoint(x: character!.position.x + dx, y: character!.position.y)
     }
-
+    
 }
