@@ -15,6 +15,12 @@
 		0BF13BA522CBB711007DACD8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BF13BA422CBB711007DACD8 /* Default-568h@2x.png */; };
 		159E063D22CBC12B00911F35 /* Level2GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159E063C22CBC12B00911F35 /* Level2GameScene.swift */; };
 		159E063F22CBC25400911F35 /* Level2GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159E063E22CBC25400911F35 /* Level2GameViewController.swift */; };
+		3C009BEB22CCE25D00A93D4B /* ParallaxGameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C009BEA22CCE25D00A93D4B /* ParallaxGameScene.swift */; };
+		3C009BED22CCE27B00A93D4B /* ParallaxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C009BEC22CCE27B00A93D4B /* ParallaxViewController.swift */; };
+		3C009BEF22CCE2E700A93D4B /* ParallaxGameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3C009BEE22CCE2E700A93D4B /* ParallaxGameScene.sks */; };
+		3C009BF122CCE3D900A93D4B /* Parallax.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C009BF022CCE3D900A93D4B /* Parallax.xcassets */; };
+		3C8CC6AE22CCF7A200F50D34 /* MyActions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CC6AD22CCF7A200F50D34 /* MyActions.sks */; };
+		3C9B6E8522CCFD01004F93E2 /* ParallaxConponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C9B6E8422CCFD01004F93E2 /* ParallaxConponent.swift */; };
 		3CBF82E422CA39F40089A5BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBF82E322CA39F40089A5BE /* AppDelegate.swift */; };
 		3CBF82EA22CA39F40089A5BE /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBF82E922CA39F40089A5BE /* GameScene.swift */; };
 		3CBF82EC22CA39F40089A5BE /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBF82EB22CA39F40089A5BE /* GameViewController.swift */; };
@@ -42,9 +48,15 @@
 		0BF13B9C22CBB1EB007DACD8 /* Level1GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Level1GameViewController.swift; sourceTree = "<group>"; };
 		0BF13B9E22CBB210007DACD8 /* Level1.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Level1.xcassets; sourceTree = "<group>"; };
 		0BF13BA222CBB2C8007DACD8 /* Player.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Player.xcassets; sourceTree = "<group>"; };
-		0BF13BA422CBB711007DACD8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		0BF13BA422CBB711007DACD8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		159E063C22CBC12B00911F35 /* Level2GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Level2GameScene.swift; sourceTree = "<group>"; };
 		159E063E22CBC25400911F35 /* Level2GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Level2GameViewController.swift; sourceTree = "<group>"; };
+		3C009BEA22CCE25D00A93D4B /* ParallaxGameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParallaxGameScene.swift; sourceTree = "<group>"; };
+		3C009BEC22CCE27B00A93D4B /* ParallaxViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParallaxViewController.swift; sourceTree = "<group>"; };
+		3C009BEE22CCE2E700A93D4B /* ParallaxGameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ParallaxGameScene.sks; sourceTree = "<group>"; };
+		3C009BF022CCE3D900A93D4B /* Parallax.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Parallax.xcassets; sourceTree = "<group>"; };
+		3C8CC6AD22CCF7A200F50D34 /* MyActions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; name = MyActions.sks; path = ../MyActions.sks; sourceTree = "<group>"; };
+		3C9B6E8422CCFD01004F93E2 /* ParallaxConponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParallaxConponent.swift; sourceTree = "<group>"; };
 		3CBF82E022CA39F40089A5BE /* DistopiaGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DistopiaGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CBF82E322CA39F40089A5BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3CBF82E922CA39F40089A5BE /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -84,6 +96,7 @@
 			children = (
 				0BF13B9C22CBB1EB007DACD8 /* Level1GameViewController.swift */,
 				159E063E22CBC25400911F35 /* Level2GameViewController.swift */,
+				3C009BEC22CCE27B00A93D4B /* ParallaxViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -93,6 +106,7 @@
 			children = (
 				0BF13B9A22CBB1DD007DACD8 /* Level1GameScene.swift */,
 				159E063C22CBC12B00911F35 /* Level2GameScene.swift */,
+				3C009BEA22CCE25D00A93D4B /* ParallaxGameScene.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -100,7 +114,6 @@
 		3CBF82D722CA39F40089A5BE = {
 			isa = PBXGroup;
 			children = (
-				0BF13BA422CBB711007DACD8 /* Default-568h@2x.png */,
 				3CBF82E222CA39F40089A5BE /* DistopiaGame */,
 				3CBF82E122CA39F40089A5BE /* Products */,
 			);
@@ -121,11 +134,14 @@
 				3CBF82FB22CB86CF0089A5BE /* Stages */,
 				3CBF830022CBA0830089A5BE /* Assets */,
 				3CBF82E322CA39F40089A5BE /* AppDelegate.swift */,
+				0BF13BA422CBB711007DACD8 /* Default-568h@2x.png */,
+				3C8CC6AD22CCF7A200F50D34 /* MyActions.sks */,
 				3CBF82E922CA39F40089A5BE /* GameScene.swift */,
 				3CBF82EB22CA39F40089A5BE /* GameViewController.swift */,
 				3CBF82ED22CA39F40089A5BE /* Main.storyboard */,
 				3CBF82F222CA39F60089A5BE /* LaunchScreen.storyboard */,
 				3CBF82F522CA39F60089A5BE /* Info.plist */,
+				3C9B6E8422CCFD01004F93E2 /* ParallaxConponent.swift */,
 			);
 			path = DistopiaGame;
 			sourceTree = "<group>";
@@ -164,6 +180,7 @@
 				3CBF830222CBA0D90089A5BE /* Level1 */,
 				3CBF830322CBA0FA0089A5BE /* Level2 */,
 				3CBF830422CBA1060089A5BE /* Level3 */,
+				3CBF832B22CCDD960089A5BE /* Level4 */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -216,6 +233,15 @@
 				3CBF832922CBA6390089A5BE /* Security.plist */,
 			);
 			path = Security;
+			sourceTree = "<group>";
+		};
+		3CBF832B22CCDD960089A5BE /* Level4 */ = {
+			isa = PBXGroup;
+			children = (
+				3C009BEE22CCE2E700A93D4B /* ParallaxGameScene.sks */,
+				3C009BF022CCE3D900A93D4B /* Parallax.xcassets */,
+			);
+			path = Level4;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -285,6 +311,7 @@
 				0BF13B9922CBB1AF007DACD8 /* Level1GameScene.sks in Resources */,
 				3CBF831822CBA3C40089A5BE /* Level2GameScene.sks in Resources */,
 				3CBF831022CBA27D0089A5BE /* Level1.plist in Resources */,
+				3C009BEF22CCE2E700A93D4B /* ParallaxGameScene.sks in Resources */,
 				3CBF832A22CBA6390089A5BE /* Security.plist in Resources */,
 				0BF13BA322CBB2C8007DACD8 /* Player.xcassets in Resources */,
 				3CBF82F122CA39F60089A5BE /* Images.xcassets in Resources */,
@@ -292,9 +319,11 @@
 				3CBF82F422CA39F60089A5BE /* LaunchScreen.storyboard in Resources */,
 				3CBF832022CBA5CD0089A5BE /* Player.sks in Resources */,
 				3CBF830A22CBA1B30089A5BE /* Level2.xcassets in Resources */,
+				3C009BF122CCE3D900A93D4B /* Parallax.xcassets in Resources */,
 				3CBF832822CBA6280089A5BE /* Player.plist in Resources */,
 				0BF13B9F22CBB210007DACD8 /* Level1.xcassets in Resources */,
 				3CBF831422CBA2A00089A5BE /* Level3.plist in Resources */,
+				3C8CC6AE22CCF7A200F50D34 /* MyActions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,11 +334,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C009BEB22CCE25D00A93D4B /* ParallaxGameScene.swift in Sources */,
 				3CBF82FF22CB88750089A5BE /* MovimentedPerson.swift in Sources */,
 				3CBF82EA22CA39F40089A5BE /* GameScene.swift in Sources */,
 				159E063D22CBC12B00911F35 /* Level2GameScene.swift in Sources */,
 				159E063F22CBC25400911F35 /* Level2GameViewController.swift in Sources */,
+				3C009BED22CCE27B00A93D4B /* ParallaxViewController.swift in Sources */,
 				0BF13B9D22CBB1EB007DACD8 /* Level1GameViewController.swift in Sources */,
+				3C9B6E8522CCFD01004F93E2 /* ParallaxConponent.swift in Sources */,
 				3CBF82EC22CA39F40089A5BE /* GameViewController.swift in Sources */,
 				0BF13B9B22CBB1DD007DACD8 /* Level1GameScene.swift in Sources */,
 				3CBF82E422CA39F40089A5BE /* AppDelegate.swift in Sources */,
@@ -459,7 +491,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = B8QFK7C948;
 				INFOPLIST_FILE = DistopiaGame/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -477,7 +509,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = B8QFK7C948;
 				INFOPLIST_FILE = DistopiaGame/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
