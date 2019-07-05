@@ -1,0 +1,332 @@
+//
+//  LevelGameScene.swift
+//  DistopiaGame
+//
+//  Created by Julia Conti Mestre on 04/07/19.
+//  Copyright © 2019 anthony.gianeli. All rights reserved.
+//
+
+import SpriteKit
+import GameplayKit
+
+//COMMON CLASS TO EVERY SCENE - CHARACTER HANDLING
+class LevelGameScene: SKScene {
+    
+    //MARK: Character variables
+    
+    //character state to animate
+    enum CharacterState {
+        case idle
+        case running
+        case jumping
+        case walking
+    }
+    
+    var character = SKSpriteNode()
+    var setCharacterState = CharacterState.idle {
+        didSet {
+            buildCharacter()
+        }
+    }
+    //Current state
+    var currentCharacterState = CharacterState.idle
+    //Previous state
+    var previousCharacterState = CharacterState.idle
+    var characterFrames: [SKTexture] = []
+    //Moviment direct and distance
+    var direction = 1
+    var dx: CGFloat = 0
+    
+    //MARK: Character state booleans
+    var isMoving = false
+    var isWalking = false
+    var isRunning = false
+    
+    //MARK: Touches variables
+    var fingerLocation = CGPoint.zero
+    var touchBeganLocation = CGPoint.zero
+    var touchEndedLocation = CGPoint.zero
+    var center = CGPoint.zero
+    let screenSize: CGRect = UIScreen.main.bounds
+    var maxDx: CGFloat = 1
+    //Handle multiple touches
+    var activeTouches = [UITouch: String]()
+    var activeTouchesFirstScreen: Int = 0
+    var middleScreen = UIScreen.main.bounds.width/2
+    
+    //MARK: Did Move Function
+    override func didMove(to view: SKView) {
+        self.character = self.childNode(withName: "character") as! SKSpriteNode
+        buildCharacter()
+    }
+    
+    //MARK: Handle Touches
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            //Handle character moviment when touches began
+            setBeganCharacterMoviment(touch)
+        }
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            //Handle character moviment when touches moved
+            let movingTouchOnScreen = activeTouches[touch]
+            
+            if movingTouchOnScreen == "firstHalfOfScreen" {
+                isMoving = true
+                setCharacterHorizontalMoviment(touch)
+            } else if movingTouchOnScreen == "secondHalfOfScreen" {
+                //handle jump and interation
+            } else if movingTouchOnScreen == "notValidTouch" {
+                break
+            }
+            
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            //Handle character moviment when touches ended
+            let endedTouchOnScreen = activeTouches[touch]
+            
+            if endedTouchOnScreen == "firstHalfOfScreen" {
+                isMoving = false
+                isRunning = false
+                isWalking = false
+                center = CGPoint.zero
+                
+                activeTouchesFirstScreen -= 1
+                
+                setCharacterState = .idle
+            } else if endedTouchOnScreen == "secondHalfOfScreen" {
+                //handle jump and interation
+            } else if endedTouchOnScreen == "notValidTouch" {
+                break
+            }
+            
+            activeTouches.removeValue(forKey: touch)
+        }
+        
+    }
+    
+    //MARK: Update
+    override func update(_ currentTime: TimeInterval) {
+        // Called before each frame is rendered
+        if isMoving {
+            moveCharacterHorizontal()
+        }
+        //handle jump and interaction
+    }
+    
+    //MARK: Character Moviments
+    fileprivate func setBeganCharacterMoviment(_ touch: UITouch) {
+        touchBeganLocation = touch.location(in: self)
+        
+        //Character horizontal moviment - First touch in the left side of the screen
+        if touchBeganLocation.x < middleScreen && activeTouchesFirstScreen == 0 {
+            activeTouches[touch] = "firstHalfOfScreen"
+            center = touch.location(in: self)
+            activeTouchesFirstScreen += 1
+            
+            //Start with the previous character state
+            if isWalking {
+                previousCharacterState = .walking
+            } else if isRunning {
+                previousCharacterState = .running
+            } else if !isMoving {
+                previousCharacterState = .idle
+            }
+            //Second touch in the left side of the screen - Invalid!
+        } else if touchBeganLocation.x < middleScreen && activeTouchesFirstScreen != 0 {
+            activeTouches[touch] = "notValidTouch"
+            
+            //Character jump or interation with objects - second half of the screen
+        } else if touchBeganLocation.x > middleScreen {
+            activeTouches[touch] = "secondHalfOfScreen"
+        }
+    }
+    
+    fileprivate func setCharacterHorizontalMoviment(_ touch: UITouch) {
+        fingerLocation = touch.location(in: self)
+        maxDx = screenSize.width/6
+        
+        let fingerDx = abs(fingerLocation.x - center.x)
+        
+        //To move the "joystick" center
+        if fingerDx >= maxDx  {
+            let difference = fingerDx - maxDx
+            //Move right
+            if fingerLocation.x > center.x {
+                center.x = center.x + difference
+                //Move Left
+            } else if fingerLocation.x < center.x {
+                center.x = center.x - difference
+            }
+        }
+        
+        //Moviment distance
+        dx = fingerLocation.x - center.x
+        
+        //To set the current state
+        if isWalking {
+            currentCharacterState = .walking
+        } else if isRunning {
+            currentCharacterState = .running
+        }
+        
+        //Compare previous and current state
+        if currentCharacterState != previousCharacterState {
+            character.removeAllActions()
+            
+            if currentCharacterState == .walking {
+                setCharacterState = .walking
+            } else if currentCharacterState == .running {
+                setCharacterState = .running
+            }
+            
+            previousCharacterState = currentCharacterState
+        }
+        
+        //To set the character direction
+        if dx > 0 {
+            direction = 1
+        } else if dx < 0 {
+            direction = -1
+        }
+        character.xScale = abs(character.xScale) * CGFloat(direction)
+    }
+    
+    func moveCharacterHorizontal() {
+        maxDx = screenSize.width/6
+        
+        // How fast to move the node. Adjust as needed
+        let speed: CGFloat = 0.018
+        
+        // Compute vector components in direction of the touch
+        dx = fingerLocation.x - center.x
+        //Ajust max velocity
+        if dx >= maxDx {
+            dx = maxDx
+        } else if dx <= -maxDx {
+            dx = -maxDx
+        }
+        
+        //Set the character state
+        if abs(dx) < maxDx/3 {
+            isWalking = true
+            isRunning = false
+        } else if abs(dx) > maxDx/3 {
+            isWalking = false
+            isRunning = true
+        }
+        
+        character.position = CGPoint(x: character.position.x + (dx * speed), y: character.position.y)
+    }
+    
+    //MARK: Animations & Frames
+    func buildCharacter() {
+        var frames: [SKTexture] = []
+        
+        switch setCharacterState {
+        case .idle:
+            idleCharacter(&frames)
+        case .jumping:
+            jumpingCharacter(&frames)
+        case .running:
+            runningCharacter(&frames)
+            
+        case .walking:
+            walkingCharacter(&frames)
+        }
+        
+        characterFrames = frames
+        let firstFrameTexture = characterFrames[0]
+        character.texture = firstFrameTexture
+        
+        //Animate character
+        character.run(SKAction.repeatForever(SKAction.animate(with: characterFrames,
+                                                              timePerFrame: 0.1,
+                                                              resize: false,
+                                                              restore: true)), withKey:"animateCharacter")
+    }
+    
+    fileprivate func idleCharacter(_ frames: inout [SKTexture]) {
+        let characterTexture = SKTextureAtlas(dictionary: [
+            "Idle1": UIImage(named: "Idle_01")!,
+            "Idle2": UIImage(named: "Idle_02")!,
+            "Idle3": UIImage(named: "Idle_03")!,
+            "Idle4": UIImage(named: "Idle_04")!,
+            "Idle5": UIImage(named: "Idle_05")!,
+            "Idle6": UIImage(named: "Idle_06")!,
+            "Idle7": UIImage(named: "Idle_07")!,
+            "Idle8": UIImage(named: "Idle_08")!,
+            "Idle9": UIImage(named: "Idle_09")!,
+            "Idle10": UIImage(named: "Idle_010")!,
+            "Idle11": UIImage(named: "Idle_011")!,
+            "Idle12": UIImage(named: "Idle_012")!])
+        
+        let numImages = characterTexture.textureNames.count
+        for i in 1...numImages {
+            let characterTextureName = "Idle\(i)"
+            frames.append(characterTexture.textureNamed(characterTextureName))
+        }
+    }
+    
+    fileprivate func jumpingCharacter(_ frames: inout [SKTexture]) {
+        let characterTexture = SKTextureAtlas(dictionary: [
+            "Jump1": UIImage(named: "Jumping_01")!,
+            "Jump2": UIImage(named: "Jumping_02")!,
+            "Jump3": UIImage(named: "Jumping_03")!,
+            "Jump4": UIImage(named: "Jumping_04")!,
+            "Jump5": UIImage(named: "Jumping_05")!,
+            "Jump6": UIImage(named: "Jumping_06")!,
+            "Jump7": UIImage(named: "Jumping_07")!,
+            "Jump8": UIImage(named: "Jumping_08")!,
+            "Jump9": UIImage(named: "Jumping_09")!])
+        
+        let numImages = characterTexture.textureNames.count
+        for i in 1...numImages {
+            let characterTextureName = "Jump\(i)"
+            frames.append(characterTexture.textureNamed(characterTextureName))
+        }
+    }
+    
+    fileprivate func runningCharacter(_ frames: inout [SKTexture]) {
+        let characterTexture = SKTextureAtlas(dictionary: [
+            "Run1": UIImage(named: "Running_01")!,
+            "Run2": UIImage(named: "Running_02")!,
+            "Run3": UIImage(named: "Running_03")!,
+            "Run4": UIImage(named: "Running_04")!,
+            "Run5": UIImage(named: "Running_05")!,
+            "Run6": UIImage(named: "Running_06")!,
+            "Run7": UIImage(named: "Running_07")!])
+        
+        let numImages = characterTexture.textureNames.count
+        for i in 1...numImages {
+            let characterTextureName = "Run\(i)"
+            frames.append(characterTexture.textureNamed(characterTextureName))
+        }
+    }
+    
+    fileprivate func walkingCharacter(_ frames: inout [SKTexture]) {
+        let characterTexture = SKTextureAtlas(dictionary: [
+            "Walk1": UIImage(named: "Walking_01")!,
+            "Walk2": UIImage(named: "Walking_02")!,
+            "Walk3": UIImage(named: "Walking_03")!,
+            "Walk4": UIImage(named: "Walking_04")!,
+            "Walk5": UIImage(named: "Walking_05")!,
+            "Walk6": UIImage(named: "Walking_06")!,
+            "Walk7": UIImage(named: "Walking_07")!,
+            "Walk8": UIImage(named: "Walking_08")!,
+            "Walk9": UIImage(named: "Walking_09")!])
+        
+        let numImages = characterTexture.textureNames.count
+        for i in 1...numImages {
+            let characterTextureName = "Walk\(i)"
+            frames.append(characterTexture.textureNamed(characterTextureName))
+        }
+    }
+    
+}
+
