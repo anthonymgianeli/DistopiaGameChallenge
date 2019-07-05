@@ -122,8 +122,8 @@
 				3CBF830022CBA0830089A5BE /* Assets */,
 				3CBF82E322CA39F40089A5BE /* AppDelegate.swift */,
 				3CBF82E922CA39F40089A5BE /* GameScene.swift */,
-				3CBF82EB22CA39F40089A5BE /* GameViewController.swift */,
 				3CBF82ED22CA39F40089A5BE /* Main.storyboard */,
+				3CBF82EB22CA39F40089A5BE /* GameViewController.swift */,
 				3CBF82F222CA39F60089A5BE /* LaunchScreen.storyboard */,
 				3CBF82F522CA39F60089A5BE /* Info.plist */,
 			);
