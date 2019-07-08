@@ -22,7 +22,8 @@ class LevelGameScene: SKScene {
         case walking
     }
     
-    var character = SKSpriteNode()
+    var characterImage = SKSpriteNode()
+    var characterBody = SKSpriteNode()
     var setCharacterState = CharacterState.idle {
         didSet {
             buildCharacter()
@@ -41,6 +42,7 @@ class LevelGameScene: SKScene {
     var isMoving = false
     var isWalking = false
     var isRunning = false
+    var isJumping = false
     
     //MARK: Touches variables
     var fingerLocation = CGPoint.zero
@@ -54,10 +56,22 @@ class LevelGameScene: SKScene {
     var activeTouchesFirstScreen: Int = 0
     var middleScreen = UIScreen.main.bounds.width/2
     
+    //Handle "secondHalfOfScreen" gestures
+    var jump = UISwipeGestureRecognizer()
+    var carry = UILongPressGestureRecognizer()
+    
     //MARK: Did Move Function
     override func didMove(to view: SKView) {
-        self.character = self.childNode(withName: "character") as! SKSpriteNode
+        self.characterImage = childNode(withName: "CharacterImage") as! SKSpriteNode
+        self.characterBody = characterImage.childNode(withName: "CharacterBody") as! SKSpriteNode
         buildCharacter()
+        
+        jump = UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:isInContact:)))
+        jump.direction = UISwipeGestureRecognizer.Direction.up
+        self.view!.addGestureRecognizer(jump)
+        
+        carry = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:isInContact:)))
+        self.view!.addGestureRecognizer(carry)
     }
     
     //MARK: Handle Touches
@@ -94,13 +108,14 @@ class LevelGameScene: SKScene {
                 isMoving = false
                 isRunning = false
                 isWalking = false
+                isJumping = false
                 center = CGPoint.zero
                 
                 activeTouchesFirstScreen -= 1
                 
                 setCharacterState = .idle
             } else if endedTouchOnScreen == "secondHalfOfScreen" {
-                //handle jump and interation
+
             } else if endedTouchOnScreen == "notValidTouch" {
                 break
             }
@@ -108,6 +123,19 @@ class LevelGameScene: SKScene {
             activeTouches.removeValue(forKey: touch)
         }
         
+    }
+    
+    @objc func longPress(_ gesture: UILongPressGestureRecognizer, isInContact:Bool) {
+        if gesture.location(in: self.view).x > middleScreen && !isInContact {
+            //Colocar acao aqui!
+        }
+    }
+    
+    @objc func swipe(_ gesture: UISwipeGestureRecognizer, isInContact: Bool) {
+        if gesture.location(in: self.view).x > middleScreen && !isInContact {
+            self.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
+            setCharacterState = .jumping
+        }
     }
     
     //MARK: Update
@@ -136,6 +164,8 @@ class LevelGameScene: SKScene {
                 previousCharacterState = .running
             } else if !isMoving {
                 previousCharacterState = .idle
+            } else if isJumping {
+                previousCharacterState = .jumping
             }
             //Second touch in the left side of the screen - Invalid!
         } else if touchBeganLocation.x < middleScreen && activeTouchesFirstScreen != 0 {
@@ -177,7 +207,7 @@ class LevelGameScene: SKScene {
         
         //Compare previous and current state
         if currentCharacterState != previousCharacterState {
-            character.removeAllActions()
+            characterImage.removeAllActions()
             
             if currentCharacterState == .walking {
                 setCharacterState = .walking
@@ -194,7 +224,7 @@ class LevelGameScene: SKScene {
         } else if dx < 0 {
             direction = -1
         }
-        character.xScale = abs(character.xScale) * CGFloat(direction)
+        characterImage.xScale = abs(characterImage.xScale) * CGFloat(direction)
     }
     
     func moveCharacterHorizontal() {
@@ -221,7 +251,7 @@ class LevelGameScene: SKScene {
             isRunning = true
         }
         
-        character.position = CGPoint(x: character.position.x + (dx * speed), y: character.position.y)
+        characterImage.position = CGPoint(x: characterImage.position.x + (dx * speed), y: characterImage.position.y)
     }
     
     //MARK: Animations & Frames
@@ -235,17 +265,16 @@ class LevelGameScene: SKScene {
             jumpingCharacter(&frames)
         case .running:
             runningCharacter(&frames)
-            
         case .walking:
             walkingCharacter(&frames)
         }
         
         characterFrames = frames
         let firstFrameTexture = characterFrames[0]
-        character.texture = firstFrameTexture
+        characterImage.texture = firstFrameTexture
         
         //Animate character
-        character.run(SKAction.repeatForever(SKAction.animate(with: characterFrames,
+        characterImage.run(SKAction.repeatForever(SKAction.animate(with: characterFrames,
                                                               timePerFrame: 0.1,
                                                               resize: false,
                                                               restore: true)), withKey:"animateCharacter")
@@ -275,15 +304,15 @@ class LevelGameScene: SKScene {
     
     fileprivate func jumpingCharacter(_ frames: inout [SKTexture]) {
         let characterTexture = SKTextureAtlas(dictionary: [
-            "Jump1": UIImage(named: "Jumping_01")!,
-            "Jump2": UIImage(named: "Jumping_02")!,
-            "Jump3": UIImage(named: "Jumping_03")!,
-            "Jump4": UIImage(named: "Jumping_04")!,
-            "Jump5": UIImage(named: "Jumping_05")!,
-            "Jump6": UIImage(named: "Jumping_06")!,
-            "Jump7": UIImage(named: "Jumping_07")!,
-            "Jump8": UIImage(named: "Jumping_08")!,
-            "Jump9": UIImage(named: "Jumping_09")!])
+            "Jump1": UIImage(named: "Jump-hero01_001")!,
+            "Jump2": UIImage(named: "Jump-hero01_002")!,
+            "Jump3": UIImage(named: "Jump-hero01_003")!,
+            "Jump4": UIImage(named: "Jump-hero01_004")!,
+            "Jump5": UIImage(named: "Jump-hero01_005")!,
+            "Jump6": UIImage(named: "Jump-hero01_006")!,
+            "Jump7": UIImage(named: "Jump-hero01_007")!,
+            "Jump8": UIImage(named: "Jump-hero01_008")!,
+            "Jump9": UIImage(named: "Jump-hero01_009")!])
         
         let numImages = characterTexture.textureNames.count
         for i in 1...numImages {
