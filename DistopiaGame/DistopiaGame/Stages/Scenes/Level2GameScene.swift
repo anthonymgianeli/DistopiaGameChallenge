@@ -3,58 +3,137 @@
 import SpriteKit
 import GameplayKit
 
-class Level2GameScene: SKScene {
-    
-    //    private var lightNode = SKLightNode()
-    //    private var background = SKSpriteNode(imageNamed: "fundo")
+struct ColliderType {
+    static let None: UInt32 = 0
+    static let Character: UInt32 = 1
+    static let Camera: UInt32 = 2
+    static let Ground: UInt32 = 4
+    static let Laser: UInt32 = 8
+}
+
+class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
+    var cameraAnchor: SKSpriteNode?
     var cameraImage: SKSpriteNode?
+    var cameraLaserBody: SKSpriteNode?
     var lightNode: SKLightNode?
     var lamp: SKSpriteNode?
-    var character: SKSpriteNode?
+    var ground: SKSpriteNode?
+    var laser: SKSpriteNode?
+    var laserAtivated: SKSpriteNode?
+    var laserButton: SKSpriteNode?
     
+    var characterOnGround:Bool = true
     
+    var movingTouch: CGPoint!
+    var firstTouch: CGPoint!
+    var movingCenter: CGPoint!
+    var movimentConstant: CGFloat = 20
+    
+    var inContactWithCamera:Bool = false
+    
+    var useLaser = UITapGestureRecognizer()
+    var aimTarget = UIPanGestureRecognizer()
     
     override func didMove(to view: SKView) {
-        self.character = self.childNode(withName: "character2") as? SKSpriteNode
-        self.cameraImage = childNode(withName: "Camera") as? SKSpriteNode
+        super.didMove(to: view)
+        
+        self.cameraAnchor = childNode(withName: "CameraAnchor") as? SKSpriteNode
+        self.cameraImage = cameraAnchor!.childNode(withName: "CameraImage") as? SKSpriteNode
+        self.cameraLaserBody = cameraAnchor!.childNode(withName: "CameraLaserBody") as? SKSpriteNode
+        self.ground = childNode(withName: "ground2") as? SKSpriteNode
+        self.laser = childNode(withName: "Laser") as? SKSpriteNode
+        self.laserButton = childNode(withName: "laserButton") as? SKSpriteNode
+        
+
         
         let rotateAnti = SKAction.rotate(byAngle: .pi/6, duration: 0.7)
         let rotateClockwise = SKAction.rotate(byAngle: -(.pi/6), duration: 0.7)
         let sequence = SKAction.sequence([rotateClockwise, rotateAnti])
         let repeatAction = SKAction.repeatForever(sequence)
-        cameraImage!.run(repeatAction)
+        cameraAnchor!.run(repeatAction)
         
         
-        //      Ponto de luz
-        //        background.size = CGSize(width: self.size.height, height: self.size.height)
-        ////        background.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-        ////        background.position = CGPoint(x: self.size.width/2, y:self.size.height/2)
-        ////        background.zPosition = -1
-        //
-        //
-        //        background.lightingBitMask = 1
-        //        background.shadowCastBitMask = 0
-        //        background.shadowedBitMask = 1
-        //        addChild(background)
-        //
+        physicsWorld.contactDelegate = self
+        characterBody.physicsBody?.categoryBitMask = ColliderType.Character
+        cameraLaserBody!.physicsBody?.categoryBitMask = ColliderType.Camera
+        laser!.physicsBody?.categoryBitMask = ColliderType.Laser
+        characterBody.physicsBody?.collisionBitMask = ColliderType.Ground
+        //Operadores binários: AND(&), OR(|)
+        //A soma dos valores sem carry tambem e valida para OR
+        characterBody.physicsBody?.contactTestBitMask = ColliderType.Camera | ColliderType.Laser
+        cameraLaserBody!.physicsBody?.contactTestBitMask = ColliderType.Character
+        laser!.physicsBody?.contactTestBitMask = ColliderType.Character
         
-        //self.lightNode = childNode(withName: "Light") as? SKLightNode
-        //        lightNode!.categoryBitMask = 1
-        //        lightNode!.falloff = 0
-        //        lightNode!.ambientColor = UIColor.white
-        //        lightNode!.lightColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.5)
-        //        lightNode!.shadowColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3)
-        //        lightNode!.setScale(50)
+        useLaser = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
+        self.view!.addGestureRecognizer(useLaser)
         
+        aimTarget = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
         
     }
     
-    //Testar se funciona
-    //Inverter if - não sei qual é o A  e o B (?)
     func didBegin(_ contact: SKPhysicsContact) {
-        if contact.bodyA == self.cameraImage && contact.bodyB == self.character {
-            print("Encostou na camera!")
+        if (contact.bodyA == self.cameraLaserBody?.physicsBody && contact.bodyB == super.characterBody.physicsBody) ||
+            (contact.bodyA == super.characterBody.physicsBody && contact.bodyB == self.cameraLaserBody?.physicsBody) {
+            inContactWithCamera = true
+            self.cameraLaserBody?.isHidden = true
+            //print("Encostou na camera!  \(inContactWithCamera)")
+        }
+        
+        if (contact.bodyA == super.characterBody.physicsBody && contact.bodyB == self.ground?.physicsBody) ||
+            (contact.bodyA == self.ground?.physicsBody && contact.bodyB == super.characterBody.physicsBody) {
+            characterOnGround = true
+            //print("true")
+        }
+        
+        if (contact.bodyA == super.characterBody.physicsBody && contact.bodyB == self.laser?.physicsBody) ||
+            (contact.bodyA == self.laser?.physicsBody && contact.bodyB == super.characterBody.physicsBody) {
+            self.laser?.removeFromParent()
+        }
+        
+    }
+    
+    
+    func didEnd(_ contact: SKPhysicsContact) {
+        if (contact.bodyA == self.cameraLaserBody?.physicsBody && contact.bodyB == super.characterBody.physicsBody) ||
+            (contact.bodyA == super.characterBody.physicsBody && contact.bodyB == self.cameraLaserBody?.physicsBody){
+             inContactWithCamera = false
+            //print("Ta fora!  \(inContactWithCamera)")
+        }
+        
+        if (contact.bodyA == super.characterBody.physicsBody && contact.bodyB == self.ground?.physicsBody) ||
+            (contact.bodyA == self.ground?.physicsBody && contact.bodyB == super.characterBody.physicsBody) {
+            characterOnGround = false
+            //print("false")
         }
     }
     
+//    //inContactWithCamera - Importante para escada diferenciar pulo de subida
+//    override func swipe(_ gesture: UISwipeGestureRecognizer, isInContact: Bool) {
+//        super.swipe(gesture, isInContact: inContactWithCamera)
+//    }
+//
+//    //inContactWithCamera - Importante para verificar contato com objetos carregáveis
+//    override func longPress(_ gesture: UILongPressGestureRecognizer, isInContact: Bool) {
+//         super.longPress(gesture, isInContact: inContactWithCamera)
+//    }
+    
+    @objc func tap(_ sender: UITapGestureRecognizer) {
+        var post = sender.location(in: sender.view)
+        post = convertPoint(fromView: post)
+        let touchNode = self.atPoint(post)
+        
+        if touchNode == self.laserButton! {
+            self.view!.addGestureRecognizer(aimTarget)
+            
+            let sprite = SKSpriteNode(imageNamed: "laserAtivated")
+            super.characterBody.addChild(sprite)
+            self.laserAtivated = characterBody.childNode(withName: "laserAtivated") as? SKSpriteNode
+        }
+    }
+    
+    @objc func pan(_ gesture: UITapGestureRecognizer) {
+        print("Ativado")
+    }
+    
 }
+
