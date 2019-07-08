@@ -74,9 +74,6 @@ class Level3GameScene: SKScene, SKPhysicsContactDelegate {
         self.character!.physicsBody?.contactTestBitMask = ColliderType.Spikes | ColliderType.Stairs | ColliderType.PressurePlate
         self.crate!.physicsBody?.contactTestBitMask = ColliderType.Character | ColliderType.PressurePlate
         
-        
-        //self.character?.physicsBody?.applyForce(CGVector(dx: 100, dy: 0))
-        
     }
     
     var count = 0
@@ -155,13 +152,6 @@ class Level3GameScene: SKScene, SKPhysicsContactDelegate {
     
     func didEnd(_ contact: SKPhysicsContact) {
         
-//        if (contact.bodyA==self.character?.physicsBody && contact.bodyB==self.spikes?.physicsBody) || (contact.bodyA==self.spikes?.physicsBody && contact.bodyB==self.character?.physicsBody) && isTouchingSpikes == false{
-//            isTouchingSpikes = false
-//            if isTouchingSpikes{
-//                print("Devia morrer")
-//            }
-//        }
-        
         if (contact.bodyA==self.character?.physicsBody && contact.bodyB==self.pressurePlate?.physicsBody) || (contact.bodyA==self.pressurePlate?.physicsBody && contact.bodyB==self.character?.physicsBody) && playerIsTouchingPressurePlate{
             playerIsTouchingPressurePlate = false
             if !playerIsTouchingPressurePlate{
@@ -176,9 +166,6 @@ class Level3GameScene: SKScene, SKPhysicsContactDelegate {
             contact.bodyB==self.character?.physicsBody) && isTouchingStairs{
             isTouchingStairs = false
             if !isTouchingStairs{
-                
-//                view!.removeGestureRecognizer(climbStairsGesture)
-//                view!.addGestureRecognizer(jumpGesture)
                 character?.physicsBody?.affectedByGravity = true
             }
         }
