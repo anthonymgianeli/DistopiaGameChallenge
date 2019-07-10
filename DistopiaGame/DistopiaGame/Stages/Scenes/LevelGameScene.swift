@@ -82,18 +82,6 @@ class LevelGameScene: SKScene{
         self.characterImage = childNode(withName: "CharacterImage") as! SKSpriteNode
         self.characterBody = characterImage.childNode(withName: "CharacterBody") as! SKSpriteNode
         buildCharacter()
-<<<<<<< HEAD
-    
-=======
-        
-        
-        jump = UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:)))
-        jump.direction = .up
-        self.view!.addGestureRecognizer(jump)
-        
-        carry = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:isInContact:)))
-        self.view!.addGestureRecognizer(carry)
->>>>>>> Level3
     }
     
     //MARK: Handle Touches
@@ -168,21 +156,8 @@ class LevelGameScene: SKScene{
         
     }
     
-<<<<<<< HEAD
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         touchesEnded(touches, with: event)
-=======
-    @objc func longPress(_ gesture: UILongPressGestureRecognizer, isInContact:Bool) {
-        if gesture.location(in: self.view).x > middleScreen && !isInContact {
-            //Colocar acao aqui!
-        }
-    }
-    
-    @objc func swipe(_ gesture: UISwipeGestureRecognizer) {
-        if gesture.location(in: self.view).x > middleScreen {
-            swipeUpActionDelegate.executeSwipeUpAction(gesture)
-        }
->>>>>>> Level3
     }
     
     //MARK: Update
