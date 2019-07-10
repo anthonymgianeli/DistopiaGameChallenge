@@ -72,6 +72,7 @@ class LevelGameScene: SKScene {
         
         carry = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:isInContact:)))
         self.view!.addGestureRecognizer(carry)
+
     }
     
     //MARK: Handle Touches

@@ -43,6 +43,8 @@ class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
         self.ground = childNode(withName: "ground2") as? SKSpriteNode
         self.laser = childNode(withName: "Laser") as? SKSpriteNode
         self.laserButton = childNode(withName: "laserButton") as? SKSpriteNode
+        self.laserAtivated = characterImage.childNode(withName: "laserActivated") as? SKSpriteNode
+        self.laserAtivated?.isHidden = true
         
 
         
@@ -64,10 +66,10 @@ class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
         cameraLaserBody!.physicsBody?.contactTestBitMask = ColliderType.Character
         laser!.physicsBody?.contactTestBitMask = ColliderType.Character
         
-        useLaser = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
+        useLaser = UITapGestureRecognizer(target: self, action: #selector(doubleTap(_:)))
+        useLaser.numberOfTapsRequired = 2
         self.view!.addGestureRecognizer(useLaser)
-        
-        aimTarget = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
+
         
     }
     
@@ -117,23 +119,15 @@ class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
 //         super.longPress(gesture, isInContact: inContactWithCamera)
 //    }
     
-    @objc func tap(_ sender: UITapGestureRecognizer) {
-        var post = sender.location(in: sender.view)
-        post = convertPoint(fromView: post)
-        let touchNode = self.atPoint(post)
+    @objc func doubleTap(_ sender: UITapGestureRecognizer) {
+//        var post = sender.location(in: sender.view)
+//        post = convertPoint(fromView: post)
+//        let touchNode = self.atPoint(post)
+
+        self.laserAtivated?.isHidden = false
         
-        if touchNode == self.laserButton! {
-            self.view!.addGestureRecognizer(aimTarget)
-            
-            let sprite = SKSpriteNode(imageNamed: "laserAtivated")
-            super.characterBody.addChild(sprite)
-            self.laserAtivated = characterBody.childNode(withName: "laserAtivated") as? SKSpriteNode
-        }
     }
     
-    @objc func pan(_ gesture: UITapGestureRecognizer) {
-        print("Ativado")
-    }
-    
+
 }
 
