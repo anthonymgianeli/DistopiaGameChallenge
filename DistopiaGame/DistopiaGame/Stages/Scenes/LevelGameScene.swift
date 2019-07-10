@@ -9,8 +9,24 @@
 import SpriteKit
 import GameplayKit
 
+struct ColliderType {
+    static let None: UInt32 = 0
+    static let Character: UInt32 = 1
+    static let Crate: UInt32 = 2
+    static let Ground: UInt32 = 4
+    static let Stairs: UInt32 = 8
+    static let Spikes: UInt32 = 16
+    static let PressurePlate: UInt32 = 32
+    static let Door: UInt32 = 64
+    static let Camera: UInt32 = 128
+    static let Laser: UInt32 = 256
+}
+
+
 //COMMON CLASS TO EVERY SCENE - CHARACTER HANDLING
-class LevelGameScene: SKScene {
+class LevelGameScene: SKScene{
+    
+    var swipeUpActionDelegate: SwipeUpActionExecutor!
     
     //MARK: Character variables
     
@@ -66,8 +82,9 @@ class LevelGameScene: SKScene {
         self.characterBody = characterImage.childNode(withName: "CharacterBody") as! SKSpriteNode
         buildCharacter()
         
-        jump = UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:isInContact:)))
-        jump.direction = UISwipeGestureRecognizer.Direction.up
+        
+        jump = UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:)))
+        jump.direction = .up
         self.view!.addGestureRecognizer(jump)
         
         carry = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:isInContact:)))
@@ -131,10 +148,9 @@ class LevelGameScene: SKScene {
         }
     }
     
-    @objc func swipe(_ gesture: UISwipeGestureRecognizer, isInContact: Bool) {
-        if gesture.location(in: self.view).x > middleScreen && !isInContact {
-            self.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
-            setCharacterState = .jumping
+    @objc func swipe(_ gesture: UISwipeGestureRecognizer) {
+        if gesture.location(in: self.view).x > middleScreen {
+            swipeUpActionDelegate.executeSwipeUpAction(gesture)
         }
     }
     
@@ -354,6 +370,22 @@ class LevelGameScene: SKScene {
         for i in 1...numImages {
             let characterTextureName = "Walk\(i)"
             frames.append(characterTexture.textureNamed(characterTextureName))
+        }
+    }
+    
+    func restart(levelWithFileNamed: String){
+        if let view = self.view as SKView? {
+            // Load the SKScene from 'GameScene.sks'
+            if let scene = SKScene(fileNamed: levelWithFileNamed) {
+                // Set the scale mode to scale to fit the window
+                scene.scaleMode = .aspectFill
+                let animation = SKTransition.fade(withDuration: 1.0)
+                // Present the scene
+                view.presentScene(scene, transition: animation)
+            }
+            view.ignoresSiblingOrder = true
+            view.showsFPS = true
+            view.showsNodeCount = true
         }
     }
     

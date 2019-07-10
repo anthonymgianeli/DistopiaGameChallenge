@@ -9,32 +9,15 @@
 import SpriteKit
 import GameplayKit
 
-struct ColliderType {
-    static let None: UInt32 = 0
-    static let Character: UInt32 = 1
-    static let Crate: UInt32 = 2
-    static let Ground: UInt32 = 4
-    static let Stairs: UInt32 = 8
-    static let Spikes: UInt32 = 16
-    static let PressurePlate: UInt32 = 32
-    static let Door: UInt32 = 64
-}
 
-class Level3GameScene: SKScene, SKPhysicsContactDelegate {
+class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate, SwipeUpActionExecutor{
     
-    var character: SKSpriteNode?
     var spikes: SKSpriteNode?
     var stairs: SKSpriteNode?
     var crate: SKSpriteNode?
     var pressurePlate: SKSpriteNode?
     var door: SKSpriteNode?
     var lampLight: SKSpriteNode?
-    
-    var movingTouch: CGPoint!
-    var firstTouch: CGPoint!
-    var movingCenter: CGPoint!
-    var movimentConstant: CGFloat = 50
-    let screenSize: CGRect = UIScreen.main.bounds
     
     var playerIsTouchingPressurePlate = false
     var crateIsTouchingPressurePlate = false
@@ -44,7 +27,10 @@ class Level3GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     override func didMove(to view: SKView) {
-        self.character = self.childNode(withName: "character") as? SKSpriteNode
+        super.didMove(to: view)
+        
+        self.swipeUpActionDelegate = self
+        
         self.spikes = self.childNode(withName: "spikes") as? SKSpriteNode
         self.stairs = self.childNode(withName: "stairs") as? SKSpriteNode
         self.crate = self.childNode(withName: "crate") as? SKSpriteNode
@@ -54,61 +40,43 @@ class Level3GameScene: SKScene, SKPhysicsContactDelegate {
         
         physicsWorld.contactDelegate = self
         
-        let jumpGesture = UISwipeGestureRecognizer(target: self, action: #selector(goUp(_:)))
-        jumpGesture.direction = .up
-        view.addGestureRecognizer(jumpGesture)
-        
         //Category BitMask
-        self.character!.physicsBody?.categoryBitMask = ColliderType.Character
+        characterBody.physicsBody?.categoryBitMask = ColliderType.Character
         self.stairs!.physicsBody?.categoryBitMask = ColliderType.Stairs
         self.spikes!.physicsBody?.categoryBitMask = ColliderType.Spikes
         self.pressurePlate!.physicsBody?.categoryBitMask = ColliderType.PressurePlate
         self.crate!.physicsBody?.categoryBitMask = ColliderType.Crate
         
         //Collision BitMask
-        self.character!.physicsBody?.collisionBitMask = ColliderType.Ground | ColliderType.Crate
+        characterBody.physicsBody?.collisionBitMask = ColliderType.Ground | ColliderType.Crate
         self.door!.physicsBody?.collisionBitMask = ColliderType.Ground | ColliderType.Character | ColliderType.Crate
         self.crate!.physicsBody?.collisionBitMask = ColliderType.Ground | ColliderType.Character
         
         //Contact BitMask
-        self.character!.physicsBody?.contactTestBitMask = ColliderType.Spikes | ColliderType.Stairs | ColliderType.PressurePlate
+        characterBody.physicsBody?.contactTestBitMask = ColliderType.Spikes | ColliderType.Stairs | ColliderType.PressurePlate
         self.crate!.physicsBody?.contactTestBitMask = ColliderType.Character | ColliderType.PressurePlate
         
     }
     
-    var count = 0
     
     func didBegin(_ contact: SKPhysicsContact) {
         
         
-        if ((contact.bodyA==self.character?.physicsBody && contact.bodyB==self.spikes?.physicsBody) || (contact.bodyA==self.spikes?.physicsBody && contact.bodyB==self.character?.physicsBody)) && !isTouchingSpikes{
-            
+        if ((contact.bodyA==super.characterBody.physicsBody && contact.bodyB==self.spikes?.physicsBody) || (contact.bodyA==self.spikes?.physicsBody && contact.bodyB==super.characterBody.physicsBody)) && !isTouchingSpikes{
             isTouchingSpikes = true
             
             if isTouchingSpikes{
-                //Restart level
-                if let view = self.view as! SKView? {
-                    // Load the SKScene from 'GameScene.sks'
-                    if let scene = SKScene(fileNamed: "Level3") {
-                        // Set the scale mode to scale to fit the window
-                        scene.scaleMode = .aspectFill
-                        let animation = SKTransition.fade(withDuration: 1.0)
-                        // Present the scene
-                        view.presentScene(scene, transition: animation)
-                    }
-                    
-                    view.ignoresSiblingOrder = true
-                    
-                    view.showsFPS = true
-                    view.showsNodeCount = true
-                }
+                super.restart(levelWithFileNamed: "Level3")
             }
         }
         
         
-        if ((contact.bodyA==self.character?.physicsBody && contact.bodyB==self.pressurePlate?.physicsBody) || (contact.bodyA==self.pressurePlate?.physicsBody && contact.bodyB==self.character?.physicsBody)) && !playerIsTouchingPressurePlate{
+        if ((contact.bodyA==super.characterBody.physicsBody && contact.bodyB==self.pressurePlate?.physicsBody) || (contact.bodyA==self.pressurePlate?.physicsBody && contact.bodyB==super.characterBody.physicsBody)) && !playerIsTouchingPressurePlate{
             
-            playerIsTouchingPressurePlate = true
+            if !crateIsTouchingPressurePlate{
+                playerIsTouchingPressurePlate = true
+            }
+            
             let liftDoor = SKAction.moveBy(x: 0, y: 150, duration: 0.5)
             
             if playerIsTouchingPressurePlate{
@@ -117,19 +85,22 @@ class Level3GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
-        if ((contact.bodyA==self.character?.physicsBody && contact.bodyB==self.stairs?.physicsBody) || (contact.bodyA==self.stairs?.physicsBody &&
-            contact.bodyB==self.character?.physicsBody)) && !isTouchingStairs{
+        if ((contact.bodyA==super.characterBody.physicsBody && contact.bodyB==self.stairs?.physicsBody) || (contact.bodyA==self.stairs?.physicsBody &&
+            contact.bodyB==super.characterBody.physicsBody)) && !isTouchingStairs{
             isTouchingStairs = true
             
             if isTouchingStairs{
                 
-                character?.physicsBody?.affectedByGravity = false
+                characterBody.physicsBody?.affectedByGravity = false
             }
         }
         
         if ((contact.bodyA==self.crate?.physicsBody && contact.bodyB==self.pressurePlate?.physicsBody) || (contact.bodyA==self.pressurePlate?.physicsBody && contact.bodyB==self.crate?.physicsBody)) && !crateIsTouchingPressurePlate{
             
-            crateIsTouchingPressurePlate = true
+            if !playerIsTouchingPressurePlate{
+                crateIsTouchingPressurePlate = true
+            }
+            
             let liftDoor = SKAction.moveBy(x: 0, y: 150, duration: 0.5)
             
             if crateIsTouchingPressurePlate{
@@ -137,7 +108,7 @@ class Level3GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
-        if ((contact.bodyA==self.crate?.physicsBody && contact.bodyB==self.character?.physicsBody) || (contact.bodyA==self.character?.physicsBody && contact.bodyB==self.crate?.physicsBody)) && !isTouchingCrate{
+        if ((contact.bodyA==self.crate?.physicsBody && contact.bodyB==super.characterBody.physicsBody) || (contact.bodyA==super.characterBody.physicsBody && contact.bodyB==self.crate?.physicsBody)) && !isTouchingCrate{
             
             isTouchingCrate = true
             
@@ -152,7 +123,7 @@ class Level3GameScene: SKScene, SKPhysicsContactDelegate {
     
     func didEnd(_ contact: SKPhysicsContact) {
         
-        if (contact.bodyA==self.character?.physicsBody && contact.bodyB==self.pressurePlate?.physicsBody) || (contact.bodyA==self.pressurePlate?.physicsBody && contact.bodyB==self.character?.physicsBody) && playerIsTouchingPressurePlate{
+        if (contact.bodyA==super.characterBody.physicsBody && contact.bodyB==self.pressurePlate?.physicsBody) || (contact.bodyA==self.pressurePlate?.physicsBody && contact.bodyB==super.characterBody.physicsBody) && playerIsTouchingPressurePlate{
             playerIsTouchingPressurePlate = false
             if !playerIsTouchingPressurePlate{
                 let unliftDoor = SKAction.moveBy(x: 0, y: -150, duration: 0.5)
@@ -162,17 +133,17 @@ class Level3GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
-        if (contact.bodyA==self.character?.physicsBody && contact.bodyB==self.stairs?.physicsBody) || (contact.bodyA==self.stairs?.physicsBody &&
-            contact.bodyB==self.character?.physicsBody) && isTouchingStairs{
+        if (contact.bodyA==super.characterBody.physicsBody && contact.bodyB==self.stairs?.physicsBody) || (contact.bodyA==self.stairs?.physicsBody &&
+            contact.bodyB==super.characterBody.physicsBody) && isTouchingStairs{
             isTouchingStairs = false
             if !isTouchingStairs{
-                character?.physicsBody?.affectedByGravity = true
+                characterBody.physicsBody?.affectedByGravity = true
             }
         }
         
         if (contact.bodyA==self.crate?.physicsBody && contact.bodyB==self.pressurePlate?.physicsBody) || (contact.bodyA==self.pressurePlate?.physicsBody && contact.bodyB==self.crate?.physicsBody) && crateIsTouchingPressurePlate{
-            
             crateIsTouchingPressurePlate = false
+            
             if !crateIsTouchingPressurePlate{
                 let unliftDoor = SKAction.moveBy(x: 0, y: -150, duration: 0.5)
                 
@@ -180,7 +151,7 @@ class Level3GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
-        if ((contact.bodyA==self.crate?.physicsBody && contact.bodyB==self.character?.physicsBody) || (contact.bodyA==self.character?.physicsBody && contact.bodyB==self.crate?.physicsBody)) && isTouchingCrate{
+        if ((contact.bodyA==self.crate?.physicsBody && contact.bodyB==super.characterBody.physicsBody) || (contact.bodyA==super.characterBody.physicsBody && contact.bodyB==self.crate?.physicsBody)) && isTouchingCrate{
             
             isTouchingCrate = false
             
@@ -188,66 +159,32 @@ class Level3GameScene: SKScene, SKPhysicsContactDelegate {
                 print("Aqui é quando ele perde o contato com a caixa, se funcionar o print o de hj ta pago")
             }
         }
-        
-        
-        
-    }
-    
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch in touches {
-            firstTouch = touch.location(in: self)
-            movingCenter = touch.location(in: self)
-        }
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch in touches {
-            movingTouch = touch.location(in: self)
-            
-            if Double(movingTouch.x) > Double(movingCenter.x) {
-                moveRight()
-                movingCenter.x = movingTouch.x - 0.1
-            } else if Double(movingTouch.x) < Double(movingCenter.x) {
-                moveLeft()
-                movingCenter.x = movingTouch.x + 0.1
-            }
-        }
-    }
-    
-    func moveRight() {
-        let maxFingerMoviment = screenSize.width/4
-        let fingerDistance = movingTouch.x - movingCenter.x
-        let velocityConstant = fingerDistance/maxFingerMoviment
-        
-        let moveRight = SKAction.moveBy(x: movimentConstant * velocityConstant, y: 0, duration: 0.5)
-        character?.run(moveRight)
-    }
-    
-    func moveLeft() {
-        let moveLeft = SKAction.moveBy(x: -movimentConstant, y: 0, duration: 1)
-        character?.run(moveLeft)
     }
      
     
-    @objc func goUp(_ sender: UISwipeGestureRecognizer) {
+    @objc func executeSwipeUpAction(_ sender: UISwipeGestureRecognizer) {
         if !isTouchingStairs{
-            let jump = SKAction.moveBy(x: 0, y: 200, duration: 1)
-            character?.run(jump)
+//            super.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
+            let jumpUpAction = SKAction.moveBy(x: 0, y:20, duration:0.4)
+            let jumpDownAction = SKAction.moveBy(x: 0, y:-20, duration:0.4)
+            
+            // sequence of move yup then down
+            let jumpSequence = SKAction.sequence([jumpUpAction, jumpDownAction])
+            
+            // make player run sequence
+            characterImage.run(jumpSequence)
+            super.setCharacterState = .jumping
+            
         }
         else{
-            let maxFingerMoviment = screenSize.height/4
-            let fingerDistance = movingTouch.y - movingCenter.y
-            let velocityConstant = fingerDistance/maxFingerMoviment
-            
-            let climb = SKAction.moveBy(x: 0, y: 3*movimentConstant * velocityConstant, duration: 0.5)
-            character?.run(climb)
+            super.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
+            super.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -20))
         }
     }
     
     @objc func holdCrate(_ sender: UILongPressGestureRecognizer){
-        character?.addChild(crate!)
         crate?.removeFromParent()
+        characterBody.addChild(crate!)
     }
     
 }
