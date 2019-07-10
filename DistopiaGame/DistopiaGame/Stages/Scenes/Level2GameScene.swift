@@ -3,14 +3,6 @@
 import SpriteKit
 import GameplayKit
 
-struct ColliderType {
-    static let None: UInt32 = 0
-    static let Character: UInt32 = 1
-    static let Camera: UInt32 = 2
-    static let Ground: UInt32 = 4
-    static let Laser: UInt32 = 8
-}
-
 class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
     var cameraAnchor: SKSpriteNode?
     var cameraImage: SKSpriteNode?
@@ -60,6 +52,7 @@ class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
         cameraLaserBody!.physicsBody?.categoryBitMask = ColliderType.Camera
         laser!.physicsBody?.categoryBitMask = ColliderType.Laser
         characterBody.physicsBody?.collisionBitMask = ColliderType.Ground
+        
         //Operadores binários: AND(&), OR(|)
         //A soma dos valores sem carry tambem e valida para OR
         characterBody.physicsBody?.contactTestBitMask = ColliderType.Camera | ColliderType.Laser

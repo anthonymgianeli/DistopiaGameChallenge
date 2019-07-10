@@ -9,8 +9,24 @@
 import SpriteKit
 import GameplayKit
 
+struct ColliderType {
+    static let None: UInt32 = 0
+    static let Character: UInt32 = 1
+    static let Crate: UInt32 = 2
+    static let Ground: UInt32 = 4
+    static let Stairs: UInt32 = 8
+    static let Spikes: UInt32 = 16
+    static let PressurePlate: UInt32 = 32
+    static let Door: UInt32 = 64
+    static let Camera: UInt32 = 128
+    static let Laser: UInt32 = 256
+}
+
+
 //COMMON CLASS TO EVERY SCENE - CHARACTER HANDLING
-class LevelGameScene: SKScene {
+class LevelGameScene: SKScene{
+    
+    var swipeUpActionDelegate: SwipeUpActionExecutor!
     
     //MARK: Character variables
     
@@ -34,9 +50,10 @@ class LevelGameScene: SKScene {
     //Previous state
     var previousCharacterState = CharacterState.idle
     var characterFrames: [SKTexture] = []
-    //Moviment direct and distance
+    //Moviment direct, distance and velocity
     var direction = 1
     var dx: CGFloat = 0
+    var characterMoviment: CGFloat = 0
     
     //MARK: Character state booleans
     var isMoving = false
@@ -65,6 +82,7 @@ class LevelGameScene: SKScene {
         self.characterImage = childNode(withName: "CharacterImage") as! SKSpriteNode
         self.characterBody = characterImage.childNode(withName: "CharacterBody") as! SKSpriteNode
         buildCharacter()
+<<<<<<< HEAD
         
         jump = UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:isInContact:)))
         jump.direction = UISwipeGestureRecognizer.Direction.up
@@ -73,6 +91,8 @@ class LevelGameScene: SKScene {
         carry = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:isInContact:)))
         self.view!.addGestureRecognizer(carry)
 
+=======
+>>>>>>> develop
     }
     
     //MARK: Handle Touches
@@ -88,11 +108,13 @@ class LevelGameScene: SKScene {
             //Handle character moviment when touches moved
             let movingTouchOnScreen = activeTouches[touch]
             
+            //Character horizontal moviment
             if movingTouchOnScreen == "firstHalfOfScreen" {
                 isMoving = true
                 setCharacterHorizontalMoviment(touch)
+            //Character jump and interation
             } else if movingTouchOnScreen == "secondHalfOfScreen" {
-                //handle jump and interation
+            //Handle jump and interation
             } else if movingTouchOnScreen == "notValidTouch" {
                 break
             }
@@ -102,9 +124,10 @@ class LevelGameScene: SKScene {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
+            touchEndedLocation = touch.location(in: self.view)
             //Handle character moviment when touches ended
             let endedTouchOnScreen = activeTouches[touch]
-            
+            //Character horizontal moviment
             if endedTouchOnScreen == "firstHalfOfScreen" {
                 isMoving = false
                 isRunning = false
@@ -115,8 +138,26 @@ class LevelGameScene: SKScene {
                 activeTouchesFirstScreen -= 1
                 
                 setCharacterState = .idle
+            //Character jump and interaction
             } else if endedTouchOnScreen == "secondHalfOfScreen" {
-
+                //CORRECT JUMP - THIS IS JUST FOR SCREEN TEST
+                if touchBeganLocation.y - touchEndedLocation.y > screenSize.height / 4 {
+                    let jumpStart = SKAction.run {
+                        self.isJumping = true
+                        self.setCharacterState = .jumping
+                    }
+                    let jumpUp = SKAction.moveBy(x: 0, y: 300, duration: 0.5)
+                    let jumpDown = SKAction.moveBy(x: 0, y: -300, duration: 1.0)
+                    let jumpEnd = SKAction.run {
+                        self.isJumping = false
+                        self.setCharacterState = .idle
+                    }
+                    
+                    let jump = SKAction.sequence([jumpStart, jumpUp, jumpEnd, jumpDown])
+                    characterImage.run(jump)
+                    
+                    
+                }
             } else if endedTouchOnScreen == "notValidTouch" {
                 break
             }
@@ -126,17 +167,8 @@ class LevelGameScene: SKScene {
         
     }
     
-    @objc func longPress(_ gesture: UILongPressGestureRecognizer, isInContact:Bool) {
-        if gesture.location(in: self.view).x > middleScreen && !isInContact {
-            //Colocar acao aqui!
-        }
-    }
-    
-    @objc func swipe(_ gesture: UISwipeGestureRecognizer, isInContact: Bool) {
-        if gesture.location(in: self.view).x > middleScreen && !isInContact {
-            self.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
-            setCharacterState = .jumping
-        }
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        touchesEnded(touches, with: event)
     }
     
     //MARK: Update
@@ -145,17 +177,17 @@ class LevelGameScene: SKScene {
         if isMoving {
             moveCharacterHorizontal()
         }
-        //handle jump and interaction
+        
     }
     
     //MARK: Character Moviments
     fileprivate func setBeganCharacterMoviment(_ touch: UITouch) {
-        touchBeganLocation = touch.location(in: self)
+        touchBeganLocation = touch.location(in: self.view)
         
         //Character horizontal moviment - First touch in the left side of the screen
         if touchBeganLocation.x < middleScreen && activeTouchesFirstScreen == 0 {
             activeTouches[touch] = "firstHalfOfScreen"
-            center = touch.location(in: self)
+            center = touch.location(in: self.view)
             activeTouchesFirstScreen += 1
             
             //Start with the previous character state
@@ -168,18 +200,18 @@ class LevelGameScene: SKScene {
             } else if isJumping {
                 previousCharacterState = .jumping
             }
-            //Second touch in the left side of the screen - Invalid!
+        //Second touch in the left side of the screen - Invalid!
         } else if touchBeganLocation.x < middleScreen && activeTouchesFirstScreen != 0 {
             activeTouches[touch] = "notValidTouch"
             
-            //Character jump or interation with objects - second half of the screen
+        //Character jump or interation with objects - second half of the screen
         } else if touchBeganLocation.x > middleScreen {
             activeTouches[touch] = "secondHalfOfScreen"
         }
     }
     
     fileprivate func setCharacterHorizontalMoviment(_ touch: UITouch) {
-        fingerLocation = touch.location(in: self)
+        fingerLocation = touch.location(in: self.view)
         maxDx = screenSize.width/6
         
         let fingerDx = abs(fingerLocation.x - center.x)
@@ -251,8 +283,9 @@ class LevelGameScene: SKScene {
             isWalking = false
             isRunning = true
         }
-        
-        characterImage.position = CGPoint(x: characterImage.position.x + (dx * speed), y: characterImage.position.y)
+
+        characterMoviment = dx * speed
+        characterImage.position = CGPoint(x: characterImage.position.x + (characterMoviment), y: characterImage.position.y)
     }
     
     //MARK: Animations & Frames
@@ -320,6 +353,7 @@ class LevelGameScene: SKScene {
             let characterTextureName = "Jump\(i)"
             frames.append(characterTexture.textureNamed(characterTextureName))
         }
+    
     }
     
     fileprivate func runningCharacter(_ frames: inout [SKTexture]) {
@@ -355,6 +389,22 @@ class LevelGameScene: SKScene {
         for i in 1...numImages {
             let characterTextureName = "Walk\(i)"
             frames.append(characterTexture.textureNamed(characterTextureName))
+        }
+    }
+    
+    func restart(levelWithFileNamed: String){
+        if let view = self.view as SKView? {
+            // Load the SKScene from 'GameScene.sks'
+            if let scene = SKScene(fileNamed: levelWithFileNamed) {
+                // Set the scale mode to scale to fit the window
+                scene.scaleMode = .aspectFill
+                let animation = SKTransition.fade(withDuration: 1.0)
+                // Present the scene
+                view.presentScene(scene, transition: animation)
+            }
+            view.ignoresSiblingOrder = true
+            view.showsFPS = true
+            view.showsNodeCount = true
         }
     }
     
