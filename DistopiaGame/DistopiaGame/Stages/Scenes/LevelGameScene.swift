@@ -82,17 +82,6 @@ class LevelGameScene: SKScene{
         self.characterImage = childNode(withName: "CharacterImage") as! SKSpriteNode
         self.characterBody = characterImage.childNode(withName: "CharacterBody") as! SKSpriteNode
         buildCharacter()
-<<<<<<< HEAD
-        
-        jump = UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:isInContact:)))
-        jump.direction = UISwipeGestureRecognizer.Direction.up
-        self.view!.addGestureRecognizer(jump)
-        
-        carry = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:isInContact:)))
-        self.view!.addGestureRecognizer(carry)
-
-=======
->>>>>>> develop
     }
     
     //MARK: Handle Touches
