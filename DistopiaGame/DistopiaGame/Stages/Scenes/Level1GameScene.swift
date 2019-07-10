@@ -83,16 +83,16 @@ class Level1GameScene: LevelGameScene {
     
     func moveCamera(rightScreenEdge: CGFloat) {
         //Left screen edge
-        if character.position.x < size.width / 2 { //don't move camera
+        if super.characterImage.position.x < size.width / 2 { //don't move camera
             camera?.position.x = size.width / 2
             
         //Right screen edge - Depends on the level size
-        } else if character.position.x > rightScreenEdge - size.width / 2 { //stop moving camera
+        } else if super.characterImage.position.x > rightScreenEdge - size.width / 2 { //stop moving camera
             camera?.position.x = rightScreenEdge - size.width / 2
             
         //Move camera according to character position
         } else {
-            camera?.position.x = character.position.x
+            camera?.position.x = super.characterImage.position.x
             currentCameraPosition.x = camera?.position.x ?? 0
             
             parallaxInXDirection()
@@ -101,8 +101,8 @@ class Level1GameScene: LevelGameScene {
         }
         
         //Move camera in y direction
-        if character.position.y > size.height / 2 {
-            camera?.position.y = character.position.y
+        if super.characterImage.position.y > size.height / 2 {
+            camera?.position.y = super.characterImage.position.y
             currentCameraPosition.y = camera?.position.y ?? 0
             
             let background1Speed: CGFloat = 0.1

@@ -63,21 +63,10 @@ class LevelGameScene: SKScene {
     
     //MARK: Did Move Function
     override func didMove(to view: SKView) {
-<<<<<<< HEAD
-        self.character = self.childNode(withName: "character") as! SKSpriteNode
-        
-=======
         self.characterImage = childNode(withName: "CharacterImage") as! SKSpriteNode
         self.characterBody = characterImage.childNode(withName: "CharacterBody") as! SKSpriteNode
->>>>>>> develop
         buildCharacter()
-        
-        jump = UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:isInContact:)))
-        jump.direction = UISwipeGestureRecognizer.Direction.up
-        self.view!.addGestureRecognizer(jump)
-        
-        carry = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:isInContact:)))
-        self.view!.addGestureRecognizer(carry)
+    
     }
     
     //MARK: Handle Touches
@@ -125,7 +114,6 @@ class LevelGameScene: SKScene {
                 setCharacterState = .idle
             //Character jump and interaction
             } else if endedTouchOnScreen == "secondHalfOfScreen" {
-<<<<<<< HEAD
                 //CORRECT JUMP - THIS IS JUST FOR SCREEN TEST
                 if touchBeganLocation.y - touchEndedLocation.y > screenSize.height / 4 {
                     let jumpStart = SKAction.run {
@@ -140,13 +128,10 @@ class LevelGameScene: SKScene {
                     }
                     
                     let jump = SKAction.sequence([jumpStart, jumpUp, jumpEnd, jumpDown])
-                    character.run(jump)
+                    characterImage.run(jump)
                     
                     
                 }
-=======
-
->>>>>>> develop
             } else if endedTouchOnScreen == "notValidTouch" {
                 break
             }
@@ -156,22 +141,8 @@ class LevelGameScene: SKScene {
         
     }
     
-<<<<<<< HEAD
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         touchesEnded(touches, with: event)
-=======
-    @objc func longPress(_ gesture: UILongPressGestureRecognizer, isInContact:Bool) {
-        if gesture.location(in: self.view).x > middleScreen && !isInContact {
-            //Colocar acao aqui!
-        }
-    }
-    
-    @objc func swipe(_ gesture: UISwipeGestureRecognizer, isInContact: Bool) {
-        if gesture.location(in: self.view).x > middleScreen && !isInContact {
-            self.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
-            setCharacterState = .jumping
-        }
->>>>>>> develop
     }
     
     //MARK: Update
@@ -286,13 +257,9 @@ class LevelGameScene: SKScene {
             isWalking = false
             isRunning = true
         }
-<<<<<<< HEAD
+
         characterMoviment = dx * speed
-        character.position = CGPoint(x: character.position.x + (characterMoviment), y: character.position.y)
-=======
-        
-        characterImage.position = CGPoint(x: characterImage.position.x + (dx * speed), y: characterImage.position.y)
->>>>>>> develop
+        characterImage.position = CGPoint(x: characterImage.position.x + (characterMoviment), y: characterImage.position.y)
     }
     
     //MARK: Animations & Frames
