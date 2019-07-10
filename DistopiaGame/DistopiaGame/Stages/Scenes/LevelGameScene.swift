@@ -22,7 +22,8 @@ class LevelGameScene: SKScene {
         case walking
     }
     
-    var character = SKSpriteNode()
+    var characterImage = SKSpriteNode()
+    var characterBody = SKSpriteNode()
     var setCharacterState = CharacterState.idle {
         didSet {
             buildCharacter()
@@ -56,11 +57,27 @@ class LevelGameScene: SKScene {
     var activeTouchesFirstScreen: Int = 0
     var middleScreen = UIScreen.main.bounds.width/2
     
+    //Handle "secondHalfOfScreen" gestures
+    var jump = UISwipeGestureRecognizer()
+    var carry = UILongPressGestureRecognizer()
+    
     //MARK: Did Move Function
     override func didMove(to view: SKView) {
+<<<<<<< HEAD
         self.character = self.childNode(withName: "character") as! SKSpriteNode
         
+=======
+        self.characterImage = childNode(withName: "CharacterImage") as! SKSpriteNode
+        self.characterBody = characterImage.childNode(withName: "CharacterBody") as! SKSpriteNode
+>>>>>>> develop
         buildCharacter()
+        
+        jump = UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:isInContact:)))
+        jump.direction = UISwipeGestureRecognizer.Direction.up
+        self.view!.addGestureRecognizer(jump)
+        
+        carry = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:isInContact:)))
+        self.view!.addGestureRecognizer(carry)
     }
     
     //MARK: Handle Touches
@@ -100,6 +117,7 @@ class LevelGameScene: SKScene {
                 isMoving = false
                 isRunning = false
                 isWalking = false
+                isJumping = false
                 center = CGPoint.zero
                 
                 activeTouchesFirstScreen -= 1
@@ -107,6 +125,7 @@ class LevelGameScene: SKScene {
                 setCharacterState = .idle
             //Character jump and interaction
             } else if endedTouchOnScreen == "secondHalfOfScreen" {
+<<<<<<< HEAD
                 //CORRECT JUMP - THIS IS JUST FOR SCREEN TEST
                 if touchBeganLocation.y - touchEndedLocation.y > screenSize.height / 4 {
                     let jumpStart = SKAction.run {
@@ -125,6 +144,9 @@ class LevelGameScene: SKScene {
                     
                     
                 }
+=======
+
+>>>>>>> develop
             } else if endedTouchOnScreen == "notValidTouch" {
                 break
             }
@@ -134,8 +156,22 @@ class LevelGameScene: SKScene {
         
     }
     
+<<<<<<< HEAD
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         touchesEnded(touches, with: event)
+=======
+    @objc func longPress(_ gesture: UILongPressGestureRecognizer, isInContact:Bool) {
+        if gesture.location(in: self.view).x > middleScreen && !isInContact {
+            //Colocar acao aqui!
+        }
+    }
+    
+    @objc func swipe(_ gesture: UISwipeGestureRecognizer, isInContact: Bool) {
+        if gesture.location(in: self.view).x > middleScreen && !isInContact {
+            self.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
+            setCharacterState = .jumping
+        }
+>>>>>>> develop
     }
     
     //MARK: Update
@@ -164,6 +200,8 @@ class LevelGameScene: SKScene {
                 previousCharacterState = .running
             } else if !isMoving {
                 previousCharacterState = .idle
+            } else if isJumping {
+                previousCharacterState = .jumping
             }
         //Second touch in the left side of the screen - Invalid!
         } else if touchBeganLocation.x < middleScreen && activeTouchesFirstScreen != 0 {
@@ -205,7 +243,7 @@ class LevelGameScene: SKScene {
         
         //Compare previous and current state
         if currentCharacterState != previousCharacterState {
-            character.removeAllActions()
+            characterImage.removeAllActions()
             
             if currentCharacterState == .walking {
                 setCharacterState = .walking
@@ -222,7 +260,7 @@ class LevelGameScene: SKScene {
         } else if dx < 0 {
             direction = -1
         }
-        character.xScale = abs(character.xScale) * CGFloat(direction)
+        characterImage.xScale = abs(characterImage.xScale) * CGFloat(direction)
     }
     
     func moveCharacterHorizontal() {
@@ -248,8 +286,13 @@ class LevelGameScene: SKScene {
             isWalking = false
             isRunning = true
         }
+<<<<<<< HEAD
         characterMoviment = dx * speed
         character.position = CGPoint(x: character.position.x + (characterMoviment), y: character.position.y)
+=======
+        
+        characterImage.position = CGPoint(x: characterImage.position.x + (dx * speed), y: characterImage.position.y)
+>>>>>>> develop
     }
     
     //MARK: Animations & Frames
@@ -263,17 +306,16 @@ class LevelGameScene: SKScene {
             jumpingCharacter(&frames)
         case .running:
             runningCharacter(&frames)
-            
         case .walking:
             walkingCharacter(&frames)
         }
         
         characterFrames = frames
         let firstFrameTexture = characterFrames[0]
-        character.texture = firstFrameTexture
+        characterImage.texture = firstFrameTexture
         
         //Animate character
-        character.run(SKAction.repeatForever(SKAction.animate(with: characterFrames,
+        characterImage.run(SKAction.repeatForever(SKAction.animate(with: characterFrames,
                                                               timePerFrame: 0.1,
                                                               resize: false,
                                                               restore: true)), withKey:"animateCharacter")

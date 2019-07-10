@@ -127,8 +127,8 @@
 				3CBF830022CBA0830089A5BE /* Assets */,
 				3CBF82E322CA39F40089A5BE /* AppDelegate.swift */,
 				3CBF82E922CA39F40089A5BE /* GameScene.swift */,
-				3CBF82EB22CA39F40089A5BE /* GameViewController.swift */,
 				3CBF82ED22CA39F40089A5BE /* Main.storyboard */,
+				3CBF82EB22CA39F40089A5BE /* GameViewController.swift */,
 				3CBF82F222CA39F60089A5BE /* LaunchScreen.storyboard */,
 				3CBF82F522CA39F60089A5BE /* Info.plist */,
 			);
@@ -467,7 +467,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = FKFGBBGDU2;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = DistopiaGame/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -485,7 +485,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = FKFGBBGDU2;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = DistopiaGame/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
