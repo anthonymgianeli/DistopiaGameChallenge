@@ -39,7 +39,6 @@ class LevelGameScene: SKScene{
     }
     
     var characterImage = SKSpriteNode()
-    var characterBody = SKSpriteNode()
     var setCharacterState = CharacterState.idle {
         didSet {
             buildCharacter()
@@ -100,13 +99,12 @@ class LevelGameScene: SKScene{
         physicsBody.allowsRotation = false
         physicsBody.pinned = false
         physicsBody.restitution = 0
-        
         self.characterImage.physicsBody = physicsBody
         
         buildCharacter() //first image and character state
         setUpCamera() //camera to move in the screen
         setUpBackground() //backgrounds to form the parallax
-        
+
         self.view?.isMultipleTouchEnabled = true
     }
     
@@ -169,11 +167,16 @@ class LevelGameScene: SKScene{
                         self.isJumping = false
                         self.setCharacterState = self.previousCharacterState
                     }
-
                     let jump = SKAction.sequence([jumpStart, jumpAction, wait, jumpEnd])
                     characterImage.run(jump)
-  
+
                 }
+                
+//                let deltaX = touchEndedLocation.x - touchBeganLocation.x
+//                let deltaY = touchEndedLocation.y - touchBeganLocation.y
+                
+
+                
             } else if endedTouchOnScreen == "notValidTouch" {
                 break
             }

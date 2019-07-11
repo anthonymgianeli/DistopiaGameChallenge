@@ -15,16 +15,10 @@ class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
     var laserButton: SKSpriteNode?
     
     var characterOnGround:Bool = true
-    
-    var movingTouch: CGPoint!
-    var firstTouch: CGPoint!
-    var movingCenter: CGPoint!
-    var movimentConstant: CGFloat = 20
-    
     var inContactWithCamera:Bool = false
+    var laserCollected:Bool = false
     
     var useLaser = UITapGestureRecognizer()
-    var aimTarget = UIPanGestureRecognizer()
     
     override func didMove(to view: SKView) {
         super.didMove(to: view)
@@ -35,6 +29,8 @@ class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
         self.ground = childNode(withName: "ground2") as? SKSpriteNode
         self.laser = childNode(withName: "Laser") as? SKSpriteNode
         self.laserButton = childNode(withName: "laserButton") as? SKSpriteNode
+        self.laserAtivated = characterImage.childNode(withName: "laserActivated") as? SKSpriteNode
+        self.laserAtivated?.isHidden = true
         
 
         
@@ -46,87 +42,83 @@ class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
         
         
         physicsWorld.contactDelegate = self
-        characterBody.physicsBody?.categoryBitMask = ColliderType.Character
+        characterImage.physicsBody?.categoryBitMask = ColliderType.Character
         cameraLaserBody!.physicsBody?.categoryBitMask = ColliderType.Camera
         laser!.physicsBody?.categoryBitMask = ColliderType.Laser
-        characterBody.physicsBody?.collisionBitMask = ColliderType.Ground
         
+        characterImage.physicsBody?.collisionBitMask = ColliderType.Ground
         //Operadores binários: AND(&), OR(|)
         //A soma dos valores sem carry tambem e valida para OR
-        characterBody.physicsBody?.contactTestBitMask = ColliderType.Camera | ColliderType.Laser
+        characterImage.physicsBody?.contactTestBitMask = ColliderType.Camera | ColliderType.Laser
         cameraLaserBody!.physicsBody?.contactTestBitMask = ColliderType.Character
         laser!.physicsBody?.contactTestBitMask = ColliderType.Character
         
-        useLaser = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
-        self.view!.addGestureRecognizer(useLaser)
-        
-        aimTarget = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
-        
+//        useLaser = UITapGestureRecognizer(target: self, action: #selector(doubleTap(_:)))
+//        useLaser.numberOfTapsRequired = 2
+//        self.view!.addGestureRecognizer(useLaser)
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        if (contact.bodyA == self.cameraLaserBody?.physicsBody && contact.bodyB == super.characterBody.physicsBody) ||
-            (contact.bodyA == super.characterBody.physicsBody && contact.bodyB == self.cameraLaserBody?.physicsBody) {
+        if (contact.bodyA == self.cameraLaserBody?.physicsBody && contact.bodyB == super.characterImage.physicsBody) ||
+            (contact.bodyA == super.characterImage.physicsBody && contact.bodyB == self.cameraLaserBody?.physicsBody) {
             inContactWithCamera = true
-            self.cameraLaserBody?.isHidden = true
+//            self.cameraLaserBody?.isHidden = true
             //print("Encostou na camera!  \(inContactWithCamera)")
         }
         
-        if (contact.bodyA == super.characterBody.physicsBody && contact.bodyB == self.ground?.physicsBody) ||
-            (contact.bodyA == self.ground?.physicsBody && contact.bodyB == super.characterBody.physicsBody) {
+        if (contact.bodyA == super.characterImage.physicsBody && contact.bodyB == self.ground?.physicsBody) ||
+            (contact.bodyA == self.ground?.physicsBody && contact.bodyB == super.characterImage.physicsBody) {
             characterOnGround = true
             //print("true")
         }
         
-        if (contact.bodyA == super.characterBody.physicsBody && contact.bodyB == self.laser?.physicsBody) ||
-            (contact.bodyA == self.laser?.physicsBody && contact.bodyB == super.characterBody.physicsBody) {
+        //Coleta laser
+        if (contact.bodyA == super.characterImage.physicsBody && contact.bodyB == self.laser?.physicsBody) ||
+            (contact.bodyA == self.laser?.physicsBody && contact.bodyB == super.characterImage.physicsBody) {
             self.laser?.removeFromParent()
+            self.laserCollected = true
         }
         
     }
     
     
     func didEnd(_ contact: SKPhysicsContact) {
-        if (contact.bodyA == self.cameraLaserBody?.physicsBody && contact.bodyB == super.characterBody.physicsBody) ||
-            (contact.bodyA == super.characterBody.physicsBody && contact.bodyB == self.cameraLaserBody?.physicsBody){
+        if (contact.bodyA == self.cameraLaserBody?.physicsBody && contact.bodyB == super.characterImage.physicsBody) ||
+            (contact.bodyA == super.characterImage.physicsBody && contact.bodyB == self.cameraLaserBody?.physicsBody){
              inContactWithCamera = false
             //print("Ta fora!  \(inContactWithCamera)")
         }
         
-        if (contact.bodyA == super.characterBody.physicsBody && contact.bodyB == self.ground?.physicsBody) ||
-            (contact.bodyA == self.ground?.physicsBody && contact.bodyB == super.characterBody.physicsBody) {
+        if (contact.bodyA == super.characterImage.physicsBody && contact.bodyB == self.ground?.physicsBody) ||
+            (contact.bodyA == self.ground?.physicsBody && contact.bodyB == characterImage.physicsBody) {
             characterOnGround = false
             //print("false")
         }
     }
+
     
-//    //inContactWithCamera - Importante para escada diferenciar pulo de subida
-//    override func swipe(_ gesture: UISwipeGestureRecognizer, isInContact: Bool) {
-//        super.swipe(gesture, isInContact: inContactWithCamera)
-//    }
+//    @objc func doubleTap(_ sender: UITapGestureRecognizer) {
+//        //verificar lado da tela
+//        if laserCollected {
+//            //action do laser piscar
+//            let showLaser = SKAction.run {
+//                self.laserAtivated?.isHidden = false
+//            }
+//            let wait = SKAction.wait(forDuration: 0.1)
+//            let hideLaser = SKAction.run {
+//                self.laserAtivated?.isHidden = true
+//            }
+//            let sequence = SKAction.sequence([showLaser, wait, hideLaser])
+//            characterImage.run(sequence)
 //
-//    //inContactWithCamera - Importante para verificar contato com objetos carregáveis
-//    override func longPress(_ gesture: UILongPressGestureRecognizer, isInContact: Bool) {
-//         super.longPress(gesture, isInContact: inContactWithCamera)
+//            //verificacao se personagem esta no intervalo de alcance da camera
+//            let intervalX = CGFloat((self.cameraAnchor?.position.x)!) - CGFloat((self.characterImage.position.x))
+//            if intervalX > 130 && intervalX < 150 && super.direction == 1 {
+//                self.cameraLaserBody?.removeFromParent()
+//            }
+//        }
 //    }
     
-    @objc func tap(_ sender: UITapGestureRecognizer) {
-        var post = sender.location(in: sender.view)
-        post = convertPoint(fromView: post)
-        let touchNode = self.atPoint(post)
-        
-        if touchNode == self.laserButton! {
-            self.view!.addGestureRecognizer(aimTarget)
-            
-            let sprite = SKSpriteNode(imageNamed: "laserAtivated")
-            super.characterBody.addChild(sprite)
-            self.laserAtivated = characterBody.childNode(withName: "laserAtivated") as? SKSpriteNode
-        }
-    }
-    
-    @objc func pan(_ gesture: UITapGestureRecognizer) {
-        print("Ativado")
-    }
-    
+
 }
 
