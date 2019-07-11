@@ -6,7 +6,7 @@
 //  Copyright © 2019 anthony.gianeli. All rights reserved.
 //
 
-import SpriteKit
+/*import SpriteKit
 import GameplayKit
 
 
@@ -188,3 +188,5 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate, SwipeUpActionEx
     }
     
 }
+
+*/

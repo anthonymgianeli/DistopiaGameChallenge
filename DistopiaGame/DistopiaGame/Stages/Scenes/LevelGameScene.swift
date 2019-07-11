@@ -39,7 +39,6 @@ class LevelGameScene: SKScene{
     }
     
     var characterImage = SKSpriteNode()
-    var characterBody = SKSpriteNode()
     var setCharacterState = CharacterState.idle {
         didSet {
             buildCharacter()
@@ -80,8 +79,15 @@ class LevelGameScene: SKScene{
     //MARK: Did Move Function
     override func didMove(to view: SKView) {
         self.characterImage = childNode(withName: "CharacterImage") as! SKSpriteNode
-        self.characterBody = characterImage.childNode(withName: "CharacterBody") as! SKSpriteNode
+        let physicsBody =  SKPhysicsBody.init(rectangleOf: CGSize(width: 30, height: 85))
+        physicsBody.isDynamic = true
+        physicsBody.affectedByGravity = true
+        physicsBody.allowsRotation = false
+        physicsBody.pinned = false
+        self.characterImage.physicsBody = physicsBody
+        
         buildCharacter()
+        self.view?.isMultipleTouchEnabled = true
     }
     
     //MARK: Handle Touches
@@ -141,12 +147,16 @@ class LevelGameScene: SKScene{
                         self.isJumping = false
                         self.setCharacterState = .idle
                     }
-                    
+
                     let jump = SKAction.sequence([jumpStart, jumpUp, jumpEnd, jumpDown])
                     characterImage.run(jump)
-                    
-                    
                 }
+                
+//                let deltaX = touchEndedLocation.x - touchBeganLocation.x
+//                let deltaY = touchEndedLocation.y - touchBeganLocation.y
+                
+
+                
             } else if endedTouchOnScreen == "notValidTouch" {
                 break
             }
