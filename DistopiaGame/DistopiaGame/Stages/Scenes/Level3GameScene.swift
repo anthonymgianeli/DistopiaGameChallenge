@@ -10,7 +10,7 @@
 import GameplayKit
 
 
-class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate, SwipeUpActionExecutor{
+class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate{
     
     var spikes: SKSpriteNode?
     var stairs: SKSpriteNode?
@@ -25,12 +25,12 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate, SwipeUpActionEx
     var isTouchingStairs = false
     var isTouchingCrate = false
     
+    var activeTouchesSecondScreen: Int = 0
+    
     
     override func didMove(to view: SKView) {
         super.didMove(to: view)
-        
-        self.swipeUpActionDelegate = self
-        
+                
         self.spikes = self.childNode(withName: "spikes") as? SKSpriteNode
         self.stairs = self.childNode(withName: "stairs") as? SKSpriteNode
         self.crate = self.childNode(withName: "crate") as? SKSpriteNode
@@ -55,12 +55,10 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate, SwipeUpActionEx
         //Contact BitMask
         characterBody.physicsBody?.contactTestBitMask = ColliderType.Spikes | ColliderType.Stairs | ColliderType.PressurePlate
         self.crate!.physicsBody?.contactTestBitMask = ColliderType.Character | ColliderType.PressurePlate
-        
     }
     
     
     func didBegin(_ contact: SKPhysicsContact) {
-        
         
         if ((contact.bodyA==super.characterBody.physicsBody && contact.bodyB==self.spikes?.physicsBody) || (contact.bodyA==self.spikes?.physicsBody && contact.bodyB==super.characterBody.physicsBody)) && !isTouchingSpikes{
             isTouchingSpikes = true
@@ -161,26 +159,26 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate, SwipeUpActionEx
         }
     }
      
-    
-    @objc func executeSwipeUpAction(_ sender: UISwipeGestureRecognizer) {
-        if !isTouchingStairs{
-//            super.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
-            let jumpUpAction = SKAction.moveBy(x: 0, y:20, duration:0.4)
-            let jumpDownAction = SKAction.moveBy(x: 0, y:-20, duration:0.4)
-            
-            // sequence of move yup then down
-            let jumpSequence = SKAction.sequence([jumpUpAction, jumpDownAction])
-            
-            // make player run sequence
-            characterImage.run(jumpSequence)
-            super.setCharacterState = .jumping
-            
-        }
-        else{
-            super.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
-            super.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -20))
-        }
-    }
+//
+//    @objc func executeSwipeUpAction(_ sender: UISwipeGestureRecognizer) {
+//        if !isTouchingStairs{
+////            super.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
+//            let jumpUpAction = SKAction.moveBy(x: 0, y:20, duration:0.4)
+//            let jumpDownAction = SKAction.moveBy(x: 0, y:-20, duration:0.4)
+//
+//            // sequence of move yup then down
+//            let jumpSequence = SKAction.sequence([jumpUpAction, jumpDownAction])
+//
+//            // make player run sequence
+//            characterImage.run(jumpSequence)
+//            super.setCharacterState = .jumping
+//
+//        }
+//        else{
+//            super.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
+//            super.characterBody.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -20))
+//        }
+//    }
     
     @objc func holdCrate(_ sender: UILongPressGestureRecognizer){
         crate?.removeFromParent()

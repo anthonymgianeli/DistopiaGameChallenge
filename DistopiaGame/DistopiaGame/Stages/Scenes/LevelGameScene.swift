@@ -159,10 +159,15 @@ class LevelGameScene: SKScene{
                         self.isJumping = true
                         self.setCharacterState = .jumping
                     }
+<<<<<<< HEAD
                     let jumpAction = SKAction.run {
                         self.characterImage.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 70))
                     }
                     let wait = SKAction.wait(forDuration: 1.0)
+=======
+                    let jumpUp = SKAction.moveBy(x: 0, y: 20, duration: 0.5)
+                    let jumpDown = SKAction.moveBy(x: 0, y: -20, duration: 0.5)
+>>>>>>> Level3
                     let jumpEnd = SKAction.run {
                         self.isJumping = false
                         self.setCharacterState = self.previousCharacterState
