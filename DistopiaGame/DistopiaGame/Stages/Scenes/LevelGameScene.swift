@@ -9,8 +9,24 @@
 import SpriteKit
 import GameplayKit
 
+struct ColliderType {
+    static let None: UInt32 = 0
+    static let Character: UInt32 = 1
+    static let Crate: UInt32 = 2
+    static let Ground: UInt32 = 4
+    static let Stairs: UInt32 = 8
+    static let Spikes: UInt32 = 16
+    static let PressurePlate: UInt32 = 32
+    static let Door: UInt32 = 64
+    static let Camera: UInt32 = 128
+    static let Laser: UInt32 = 256
+}
+
+
 //COMMON CLASS TO EVERY SCENE - CHARACTER HANDLING
-class LevelGameScene: SKScene {
+class LevelGameScene: SKScene{
+    
+    var swipeUpActionDelegate: SwipeUpActionExecutor!
     
     //MARK: Character variables
     
@@ -92,7 +108,6 @@ class LevelGameScene: SKScene {
         setUpBackground() //backgrounds to form the parallax
         
         self.view?.isMultipleTouchEnabled = true
-    
     }
     
     //MARK: Handle Touches
@@ -417,6 +432,22 @@ class LevelGameScene: SKScene {
         }
     }
     
+    func restart(levelWithFileNamed: String){
+        if let view = self.view as SKView? {
+            // Load the SKScene from 'GameScene.sks'
+            if let scene = SKScene(fileNamed: levelWithFileNamed) {
+                // Set the scale mode to scale to fit the window
+                scene.scaleMode = .aspectFill
+                let animation = SKTransition.fade(withDuration: 1.0)
+                // Present the scene
+                view.presentScene(scene, transition: animation)
+            }
+            view.ignoresSiblingOrder = true
+            view.showsFPS = true
+            view.showsNodeCount = true
+        }
+    }
+        
     //MARK: Background/Parallax Functions
     func setUpCamera() {
         addChild(cameraNode)
