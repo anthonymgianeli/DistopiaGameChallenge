@@ -77,11 +77,37 @@ class LevelGameScene: SKScene{
     var jump = UISwipeGestureRecognizer()
     var carry = UILongPressGestureRecognizer()
     
+    //MARK: Background variables
+    var background1 = SKSpriteNode()
+    var background2 = SKSpriteNode()
+    var background3 = SKSpriteNode()
+    var background4 = SKSpriteNode()
+    
+    var backgrounds = [SKSpriteNode()]
+    
+    //Camera variables
+    let cameraNode = SKCameraNode()
+    var previousCameraPosition = CGPoint.zero
+    var currentCameraPosition = CGPoint.zero
+
+    
     //MARK: Did Move Function
     override func didMove(to view: SKView) {
         self.characterImage = childNode(withName: "CharacterImage") as! SKSpriteNode
-        self.characterBody = characterImage.childNode(withName: "CharacterBody") as! SKSpriteNode
-        buildCharacter()
+        let physicsBody =  SKPhysicsBody.init(rectangleOf: CGSize(width: 30, height: 85))
+        physicsBody.isDynamic = true
+        physicsBody.affectedByGravity = true
+        physicsBody.allowsRotation = false
+        physicsBody.pinned = false
+        physicsBody.restitution = 0
+        
+        self.characterImage.physicsBody = physicsBody
+        
+        buildCharacter() //first image and character state
+        setUpCamera() //camera to move in the screen
+        setUpBackground() //backgrounds to form the parallax
+        
+        self.view?.isMultipleTouchEnabled = true
     }
     
     //MARK: Handle Touches
@@ -135,17 +161,18 @@ class LevelGameScene: SKScene{
                         self.isJumping = true
                         self.setCharacterState = .jumping
                     }
-                    let jumpUp = SKAction.moveBy(x: 0, y: 300, duration: 0.5)
-                    let jumpDown = SKAction.moveBy(x: 0, y: -300, duration: 1.0)
+                    let jumpAction = SKAction.run {
+                        self.characterImage.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 70))
+                    }
+                    let wait = SKAction.wait(forDuration: 1.0)
                     let jumpEnd = SKAction.run {
                         self.isJumping = false
-                        self.setCharacterState = .idle
+                        self.setCharacterState = self.previousCharacterState
                     }
-                    
-                    let jump = SKAction.sequence([jumpStart, jumpUp, jumpEnd, jumpDown])
+
+                    let jump = SKAction.sequence([jumpStart, jumpAction, wait, jumpEnd])
                     characterImage.run(jump)
-                    
-                    
+  
                 }
             } else if endedTouchOnScreen == "notValidTouch" {
                 break
@@ -166,6 +193,18 @@ class LevelGameScene: SKScene{
         if isMoving {
             moveCharacterHorizontal()
         }
+        
+        moveCamera(rightScreenEdge: size.width)
+        
+        /* The rightScreenEdge variable represents the size of the level
+         If the rightScreenEdge is different than size.width, then to add parallax and camera moviment, in every level the uptade func must be overriten as follow:
+         
+        override func update(_ currentTime: TimeInterval) {
+            super.update(currentTime)
+            moveCamera(rightScreenEdge: LEVEL SIZE)
+        }
+
+        */
         
     }
     
@@ -196,6 +235,18 @@ class LevelGameScene: SKScene{
         //Character jump or interation with objects - second half of the screen
         } else if touchBeganLocation.x > middleScreen {
             activeTouches[touch] = "secondHalfOfScreen"
+            
+            //Start with the previous character state
+            if isWalking {
+                previousCharacterState = .walking
+            } else if isRunning {
+                previousCharacterState = .running
+            } else if !isMoving {
+                previousCharacterState = .idle
+            } else if isJumping {
+                previousCharacterState = .jumping
+            }
+            
         }
     }
     
@@ -394,6 +445,106 @@ class LevelGameScene: SKScene{
             view.ignoresSiblingOrder = true
             view.showsFPS = true
             view.showsNodeCount = true
+        }
+    }
+        
+    //MARK: Background/Parallax Functions
+    func setUpCamera() {
+        addChild(cameraNode)
+        camera = cameraNode
+        camera?.position.x = size.width / 2
+        camera?.position.y = size.height / 2
+        previousCameraPosition.x = camera?.position.x ?? 0
+        previousCameraPosition.y = camera?.position.y ?? 0
+    }
+    
+    func setUpBackground() {
+        background1 = SKSpriteNode(imageNamed: "background1")
+        background2 = SKSpriteNode(imageNamed: "background2")
+        background3 = SKSpriteNode(imageNamed: "background3")
+        background4 = SKSpriteNode(imageNamed: "background4")
+        
+        background1.position = CGPoint(x: background1.size.width / 2, y: background1.size.height / 2)
+        background2.position = CGPoint(x: background2.size.width / 2, y: background2.size.height / 2)
+        background3.position = CGPoint(x: background3.size.width / 2, y: background3.size.height / 2)
+        background4.position = CGPoint(x: background4.size.width / 2, y: background4.size.height / 2)
+        
+        background1.zPosition = -10
+        background2.zPosition = -9
+        background3.zPosition = -8
+        background4.zPosition = -7
+        
+        addChild(background1)
+        addChild(background2)
+        addChild(background3)
+        addChild(background4)
+        
+        backgrounds = [background1, background2, background3, background4]
+    }
+    
+    func moveCamera(rightScreenEdge: CGFloat) {
+        //Left screen edge
+        if characterImage.position.x < size.width / 2 { //don't move camera
+            camera?.position.x = size.width / 2
+            
+            //Right screen edge - Depends on the level size
+        } else if characterImage.position.x > rightScreenEdge - size.width / 2 { //stop moving camera
+            camera?.position.x = rightScreenEdge - size.width / 2
+            
+            //Move camera according to character position
+        } else {
+            camera?.position.x = characterImage.position.x
+            currentCameraPosition.x = camera?.position.x ?? 0
+            
+            parallaxInXDirection()
+            
+            previousCameraPosition.x = currentCameraPosition.x
+        }
+        
+        //Move camera in Y direction
+        if characterImage.position.y > screenSize.height / 2 {
+            camera?.position.y = characterImage.position.y
+            currentCameraPosition.y = camera?.position.y ?? 0
+            
+            let background1Speed: CGFloat = 0.3
+            let background2Speed: CGFloat = 0.5
+            let background3Speed: CGFloat = 0.7
+            let background4Speed: CGFloat = 0.9
+            
+            let backgroundsSpeed = [background1Speed, background2Speed, background3Speed, background4Speed]
+            
+            
+            var difY = currentCameraPosition.y - previousCameraPosition.y
+            
+            for i in 0...(backgrounds.count - 1) {
+                difY = difY * backgroundsSpeed[i]
+                backgrounds[i].position = CGPoint(x: backgrounds[i].position.x, y: backgrounds[i].position.y + difY)
+            }
+            
+            previousCameraPosition.y = currentCameraPosition.y
+        }
+    }
+    
+    fileprivate func parallaxInXDirection() {
+        let background1Speed: CGFloat = 0.1
+        let background2Speed: CGFloat = 0.3
+        let background3Speed: CGFloat = 0.5
+        let background4Speed: CGFloat = 0.7
+        
+        let backgroundsSpeed = [background1Speed, background2Speed, background3Speed, background4Speed]
+        
+        //Parallax in x direction
+        if previousCameraPosition.x != currentCameraPosition.x {
+            
+            //To let the background still while camera is moving
+            let cameraMovimentX = (currentCameraPosition.x - previousCameraPosition.x)
+            
+            for i in 0...(backgrounds.count - 1) {
+                
+                let moveX = backgrounds[i].position.x + cameraMovimentX + -characterMoviment * backgroundsSpeed[i]
+                
+                backgrounds[i].position = CGPoint(x: moveX, y: backgrounds[i].position.y)
+            }
         }
     }
     
