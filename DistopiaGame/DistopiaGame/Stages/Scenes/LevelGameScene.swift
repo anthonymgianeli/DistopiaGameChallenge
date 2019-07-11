@@ -135,8 +135,8 @@ class LevelGameScene: SKScene{
                         self.isJumping = true
                         self.setCharacterState = .jumping
                     }
-                    let jumpUp = SKAction.moveBy(x: 0, y: 300, duration: 0.5)
-                    let jumpDown = SKAction.moveBy(x: 0, y: -300, duration: 1.0)
+                    let jumpUp = SKAction.moveBy(x: 0, y: 20, duration: 0.5)
+                    let jumpDown = SKAction.moveBy(x: 0, y: -20, duration: 0.5)
                     let jumpEnd = SKAction.run {
                         self.isJumping = false
                         self.setCharacterState = .idle
