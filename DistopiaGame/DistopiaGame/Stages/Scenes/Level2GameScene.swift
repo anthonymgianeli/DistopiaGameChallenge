@@ -10,6 +10,9 @@ class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
     var ground: SKSpriteNode?
     var laser: SKSpriteNode?
     var laserAtivated: SKSpriteNode?
+    var light: SKLightNode?
+    var lamp:  SKSpriteNode?
+    var triangle:  SKSpriteNode?
     
     var characterOnGround:Bool = true
     var laserCollected:Bool = false
@@ -26,8 +29,12 @@ class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
         self.laser = childNode(withName: "Laser") as? SKSpriteNode
         self.laserAtivated = characterImage.childNode(withName: "laserActivated") as? SKSpriteNode
         self.laserAtivated?.isHidden = true
+        self.light = childNode(withName: "Light") as? SKLightNode
+        self.lamp = childNode(withName: "Lamp") as? SKSpriteNode
+        self.triangle = childNode(withName: "Triangle") as? SKSpriteNode
         
         rotateCamera()
+        lightConfig()
         
         //Tratamento das colisoes/contato
         physicsWorld.contactDelegate = self
@@ -108,6 +115,13 @@ class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
         let sequence = SKAction.sequence([rotateClockwise, rotateAnti])
         let repeatAction = SKAction.repeatForever(sequence)
         cameraAnchor!.run(repeatAction)
+    }
+    
+    func lightConfig() {
+        light?.lightColor = .white
+        light?.shadowColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3)
+        triangle?.lightingBitMask = 0b0001
+        triangle?.shadowCastBitMask = 0b0001
     }
     
     override func update(_ currentTime: TimeInterval) {
