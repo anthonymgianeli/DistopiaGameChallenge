@@ -22,7 +22,7 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate, SwipeUpActionEx
     var playerIsTouchingPressurePlate = false
     var crateIsTouchingPressurePlate = false
     var isTouchingSpikes = false
-    var isTouchingStairs = false
+//    var isTouchingStairs = false
     var isTouchingCrate = false
     
     
