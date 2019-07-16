@@ -20,8 +20,12 @@ struct ColliderType {
     static let Door: UInt32 = 64
     static let Camera: UInt32 = 128
     static let Laser: UInt32 = 256
+<<<<<<< HEAD
     static let WinningFlag: UInt32 = 512
     static let Wall: UInt32 = 1024
+=======
+    static let Wall: UInt32 = 512
+>>>>>>> Luma
 }
 
 
@@ -104,6 +108,8 @@ class LevelGameScene: SKScene{
     var currentCameraPosition = CGPoint.zero
 
     
+    let music = Music()
+    
     //MARK: Did Move Function
     override func didMove(to view: SKView) {
         self.characterImage = childNode(withName: "CharacterImage") as! SKSpriteNode
@@ -121,6 +127,8 @@ class LevelGameScene: SKScene{
 //        setUpBackground() //backgrounds to form the parallax
 
         self.view?.isMultipleTouchEnabled = true
+        
+        self.music.playingSoundWith(fileName: "BackgroundSound", type: "mp3")
     }
     
     //MARK: Handle Touches
@@ -213,12 +221,17 @@ class LevelGameScene: SKScene{
                         self.characterImage.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 70))
                     }
                     let wait = SKAction.wait(forDuration: 1.0)
+<<<<<<< HEAD
 
+=======
+                    let sound = music.playJump()
+                    let group = SKAction.group([wait, sound])
+>>>>>>> Luma
                     let jumpEnd = SKAction.run {
                         self.isJumping = false
                         self.setCharacterState = self.previousCharacterState
                     }
-                    let jump = SKAction.sequence([jumpStart, jumpAction, wait, jumpEnd])
+                    let jump = SKAction.sequence([jumpStart, jumpAction, group, jumpEnd])
                     characterImage.run(jump)
                 }
                 
@@ -385,14 +398,20 @@ class LevelGameScene: SKScene{
     func buildCharacter() {
         var frames: [SKTexture] = []
         
+        var sound = SKAction.wait(forDuration: 0.001)
+        
         switch setCharacterState {
         case .idle:
+            sound = SKAction.wait(forDuration: 0.001)
             idleCharacter(&frames)
         case .jumping:
+            sound = SKAction.wait(forDuration: 0.001)
             jumpingCharacter(&frames)
         case .running:
+            sound = music.playRun()
             runningCharacter(&frames)
         case .walking:
+            sound = music.playWalk()
             walkingCharacter(&frames)
         case.climbing:
             idleCharacter(&frames) //TODO: change to climbing frames
@@ -402,11 +421,21 @@ class LevelGameScene: SKScene{
         let firstFrameTexture = characterFrames[0]
         characterImage.texture = firstFrameTexture
         
-        //Animate character
-        characterImage.run(SKAction.repeatForever(SKAction.animate(with: characterFrames,
+
+        let animate = SKAction.animate(with: characterFrames,
                                                               timePerFrame: 0.1,
                                                               resize: false,
-                                                              restore: true)), withKey:"animateCharacter")
+                                                              restore: true)
+        
+        let repeatAnimation = SKAction.repeatForever(animate)
+        let soundLoop = SKAction.sequence([sound,SKAction.wait(forDuration: 1.0)])
+        let repeatSound = SKAction.repeatForever(soundLoop)
+        let group = SKAction.group([repeatSound,repeatAnimation])
+        
+        
+        characterImage.removeAction(forKey: "AnimatedWithSound")
+        //Animate character
+        characterImage.run(group, withKey: "AnimatedWithSound")
     }
     
     fileprivate func idleCharacter(_ frames: inout [SKTexture]) {
