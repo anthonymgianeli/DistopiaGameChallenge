@@ -370,7 +370,7 @@ class LevelGameScene: SKScene{
                                                               restore: true)
         
         let repeatAnimation = SKAction.repeatForever(animate)
-        let soundLoop = SKAction.sequence([sound,SKAction.wait(forDuration: 1.1)])
+        let soundLoop = SKAction.sequence([sound,SKAction.wait(forDuration: 1.0)])
         let repeatSound = SKAction.repeatForever(soundLoop)
         let group = SKAction.group([repeatSound,repeatAnimation])
         
