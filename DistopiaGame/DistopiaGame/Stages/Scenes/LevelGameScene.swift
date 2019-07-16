@@ -20,13 +20,17 @@ struct ColliderType {
     static let Door: UInt32 = 64
     static let Camera: UInt32 = 128
     static let Laser: UInt32 = 256
-    static let WinningFlag: UInt32 = 512
+    static let Platform: UInt32 = 512
     static let Wall: UInt32 = 1024
+    static let Gear: UInt32 = 2048
+    static let Tubes: UInt32 = 4096
+    static let Barrel: UInt32 = 8192
+    static let WinningFlag: UInt32 = 16384
 }
 
 
 //COMMON CLASS TO EVERY SCENE - CHARACTER HANDLING
-class LevelGameScene: SKScene{
+class LevelGameScene: SKScene {
     
     var swipeUpActionDelegate: SwipeUpActionExecutor!
     
@@ -38,6 +42,7 @@ class LevelGameScene: SKScene{
         case running
         case jumping
         case walking
+        case dead
         case climbing
     }
     
@@ -68,11 +73,25 @@ class LevelGameScene: SKScene{
     var isPushing = false
 
     var stairHeight:CGFloat = 0
+
+    var isDead = false
+    var isClimbingUp = false
+    
+    //Climbing variables
+    var climbStart = SKAction()
+    var climbAction = SKAction()
+    var wait = SKAction()
+    var climbEnd = SKAction()
+    var climbSequence = SKAction()
+    var climblingDuration: TimeInterval = 0
+
     
     //MARK: Touches variables
+    //General locations
     var fingerLocation = CGPoint.zero
     var touchBeganLocation = CGPoint.zero
     var touchEndedLocation = CGPoint.zero
+    
     var center = CGPoint.zero
     let screenSize: CGRect = UIScreen.main.bounds
     var maxDx: CGFloat = 1
@@ -84,11 +103,6 @@ class LevelGameScene: SKScene{
     //Handle "secondHalfOfScreen" gestures
     var jump = UISwipeGestureRecognizer()
     var carry = UILongPressGestureRecognizer()
-    var climbStart = SKAction()
-    var climbAction = SKAction()
-    var wait = SKAction()
-    var climbEnd = SKAction()
-    var climbSequence = SKAction()
     
     //MARK: Background variables
     var background1 = SKSpriteNode()
@@ -97,6 +111,9 @@ class LevelGameScene: SKScene{
     var background4 = SKSpriteNode()
     
     var backgrounds = [SKSpriteNode()]
+    
+    let fog1 = SKSpriteNode(imageNamed: "fog1")
+    let fog2 = SKSpriteNode(imageNamed: "fog2")
     
     //Camera variables
     let cameraNode = SKCameraNode()
@@ -108,14 +125,17 @@ class LevelGameScene: SKScene{
     
     //MARK: Did Move Function
     override func didMove(to view: SKView) {
+        stairHeight = screenSize.height
+        
         self.characterImage = childNode(withName: "CharacterImage") as! SKSpriteNode
-        let physicsBody =  SKPhysicsBody.init(rectangleOf: CGSize(width: 30, height: 85))
+        let physicsBody =  SKPhysicsBody.init(rectangleOf: CGSize(width: 20, height: 70))
         physicsBody.isDynamic = true
         physicsBody.affectedByGravity = true
         physicsBody.allowsRotation = false
         physicsBody.pinned = false
         physicsBody.restitution = 0
-        physicsBody.mass = 0.1133
+        physicsBody.mass = 0.1133 // 113g
+        
         self.characterImage.physicsBody = physicsBody
         
         buildCharacter() //first image and character state
@@ -125,13 +145,22 @@ class LevelGameScene: SKScene{
         self.view?.isMultipleTouchEnabled = true
         
         self.music.playingSoundWith(fileName: "BackgroundSound", type: "mp3")
+
+        createFog()
+        
+        isDead = false
     }
     
     //MARK: Handle Touches
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
-            //Handle character moviment when touches began
-            setBeganCharacterMoviment(touch)
+            if isDead == true || isClimbing == true {
+                touchesEnded(touches, with: event)
+            } else {
+                //Handle character moviment when touches began
+                setBeganCharacterMoviment(touch)
+            }
+            
         }
     }
     
@@ -140,15 +169,32 @@ class LevelGameScene: SKScene{
             //Handle character moviment when touches moved
             let movingTouchOnScreen = activeTouches[touch]
             
-            //Character horizontal moviment
-            if movingTouchOnScreen == "firstHalfOfScreen" {
-                isMoving = true
-                setCharacterHorizontalMoviment(touch)
-            //Character jump and interation
-            } else if movingTouchOnScreen == "secondHalfOfScreen" {
-            //Handle jump and interation
-            } else if movingTouchOnScreen == "notValidTouch" {
-                break
+            if isDead == true || isClimbing == true {
+                if isClimbing == true && setCharacterState != .climbing {
+                    setCharacterState = .climbing
+                }
+                touchesEnded(touches, with: event)
+            } else {
+                //Character horizontal moviment
+                if movingTouchOnScreen == "firstHalfOfScreen" {
+                    //Adjust touch interation
+                    if isJumping == true {
+                        if setCharacterState == .jumping {
+                            break
+                        } else {
+                            isJumping = false
+                        }
+                    }
+                    
+                    isMoving = true
+                    setCharacterHorizontalMoviment(touch)
+                    
+                    //Character jump and interation
+                } else if movingTouchOnScreen == "secondHalfOfScreen" {
+                    //Handle jump and interation
+                } else if movingTouchOnScreen == "notValidTouch" {
+                    break
+                }
             }
             
         }
@@ -159,79 +205,99 @@ class LevelGameScene: SKScene{
             touchEndedLocation = touch.location(in: self.view)
             //Handle character moviment when touches ended
             let endedTouchOnScreen = activeTouches[touch]
-            //Character horizontal moviment
-            if endedTouchOnScreen == "firstHalfOfScreen" {
-                isMoving = false
-                isRunning = false
-                isWalking = false
-                isJumping = false
-                center = CGPoint.zero
-                
-                activeTouchesFirstScreen -= 1
-                
-                setCharacterState = .idle
-            //Character jump and interaction
-            } else if endedTouchOnScreen == "secondHalfOfScreen" {
-                
-                //CORRECT JUMP - THIS IS JUST FOR SCREEN TEST
-                if isTouchingStairs && !isCharacterAboveStairs && !isPushing && touchBeganLocation.y - touchEndedLocation.y > screenSize.height / 4 {
-                    //Climb Actions
-                    climbStart = SKAction.run {
-                        self.isClimbing = true
-                        self.setCharacterState = .climbing
-                    }
-                    climbAction = SKAction.moveBy(x: 0, y: stairHeight, duration: 1)
-                    wait = SKAction.wait(forDuration: 1.0)
-                    climbEnd = SKAction.run {
-                        self.isClimbing = false
-                        self.setCharacterState = self.previousCharacterState
-                    }
-                    climbSequence = SKAction.sequence([climbStart, climbAction, wait, climbEnd])
-                    
-                    characterImage.run(climbSequence)
-                }
-                else if isTouchingStairs && isCharacterAboveStairs && !isPushing && touchBeganLocation.y - touchEndedLocation.y < screenSize.height / 4 {
-                    
-                    characterImage.physicsBody?.collisionBitMask = ColliderType.Ground | ColliderType.Crate | ColliderType.WinningFlag | ColliderType.Door
-                    //Climb Down Actions
-                    climbStart = SKAction.run {
-                        self.isClimbing = true
-                        self.setCharacterState = .climbing
-                    }
-                    climbAction = SKAction.moveBy(x: 0, y: -stairHeight, duration: 1)
-                    wait = SKAction.wait(forDuration: 1.0)
-                    climbEnd = SKAction.run {
-                        self.isClimbing = false
-                        self.setCharacterState = self.previousCharacterState
-                    }
-                    climbSequence = SKAction.sequence([climbStart, climbAction, wait, climbEnd])
-                    
-                    characterImage.run(climbSequence)
-                }
-                else if touchBeganLocation.y - touchEndedLocation.y > screenSize.height / 4 && !isPushing {
-                    let jumpStart = SKAction.run {
-                        self.isJumping = true
-                        self.setCharacterState = .jumping
-                    }
-                    let jumpAction = SKAction.run {
-                        self.characterImage.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 70))
-                    }
-                    let wait = SKAction.wait(forDuration: 1.0)
-                    let sound = music.playJump()
-                    let group = SKAction.group([wait, sound])
-                    let jumpEnd = SKAction.run {
-                        self.isJumping = false
-                        self.setCharacterState = self.previousCharacterState
-                    }
-                    let jump = SKAction.sequence([jumpStart, jumpAction, group, jumpEnd])
-                    characterImage.run(jump)
-                }
-
-                
-            } else if endedTouchOnScreen == "notValidTouch" {
-                break
-            }
             
+            if isDead == true {
+                break
+            } else {
+                //Character horizontal moviment
+                if endedTouchOnScreen == "firstHalfOfScreen" {
+                    
+                    isMoving = false
+                    isRunning = false
+                    isWalking = false
+                    center = CGPoint.zero
+                    
+                    activeTouchesFirstScreen -= 1
+                    
+                    if isJumping == false && isDead == false {
+                        setCharacterState = .idle
+                    }
+                    
+                    previousCharacterState = .idle
+                    
+                    //Character jump and interaction
+                } else if endedTouchOnScreen == "secondHalfOfScreen" {
+                    
+                    if isTouchingStairs && !isCharacterAboveStairs && !isPushing && touchBeganLocation.y - touchEndedLocation.y > screenSize.height / 4 && !isClimbing {
+                        //Climb Actions
+                        climblingDuration = TimeInterval(stairHeight / 90)
+                        climbStart = SKAction.run {
+                            self.isClimbing = true
+                            self.isClimbingUp = true
+                            self.setCharacterState = .climbing
+                        }
+                        climbAction = SKAction.moveBy(x: 0, y: stairHeight - 10, duration: climblingDuration)
+                        wait = SKAction.wait(forDuration: 0)
+                        climbEnd = SKAction.run {
+                            self.isClimbing = false
+                            self.isClimbingUp = false
+                            self.setCharacterState = self.previousCharacterState
+                        }
+                        climbSequence = SKAction.sequence([climbStart, climbAction, wait, climbEnd])
+                        
+                        characterImage.run(climbSequence)
+                        
+                    } else if isTouchingStairs && isCharacterAboveStairs && !isPushing && touchBeganLocation.y - touchEndedLocation.y < screenSize.height / 4 && !isClimbing {
+                        
+                        characterImage.physicsBody?.collisionBitMask = ColliderType.Ground | ColliderType.Crate | ColliderType.WinningFlag | ColliderType.Door
+                        
+                        climblingDuration = TimeInterval(stairHeight / 90)
+                        
+                        //Climb Down Actions
+                        climbStart = SKAction.run {
+                            self.isClimbing = true
+                            self.setCharacterState = .climbing
+                        }
+                        climbAction = SKAction.moveBy(x: 0, y: -stairHeight, duration: climblingDuration)
+                        wait = SKAction.wait(forDuration: 0)
+                        climbEnd = SKAction.run {
+                            self.isClimbing = false
+                            self.setCharacterState = self.previousCharacterState
+                        }
+                        climbSequence = SKAction.sequence([climbStart, climbAction, wait, climbEnd])
+                        
+                        characterImage.run(climbSequence)
+                        
+                    } else if !isTouchingStairs && !isPushing && touchBeganLocation.y - touchEndedLocation.y > screenSize.height / 4 && isJumping == false {
+                        let jumpStart = SKAction.run {
+                            self.isJumping = true
+                            self.setCharacterState = .jumping
+                        }
+                        let jumpAction = SKAction.run {
+                            self.characterImage.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 75))
+                        }
+                        let wait = SKAction.wait(forDuration: 0.9)
+                        let sound = music.playJump()
+                        let group = SKAction.group([wait, sound])
+                        let jumpEnd = SKAction.run {
+                            self.isJumping = false
+                            if self.isDead == true {
+                                self.setCharacterState = .dead
+                            } else {
+                                self.setCharacterState = self.previousCharacterState
+                            }
+                            
+                        }
+                        
+                        let jump = SKAction.sequence([jumpStart, jumpAction, group, jumpEnd])
+                        characterImage.run(jump)
+                    }
+
+                } else if endedTouchOnScreen == "notValidTouch" {
+                    break
+                }
+            }
+ 
             activeTouches.removeValue(forKey: touch)
         }
         
@@ -250,16 +316,7 @@ class LevelGameScene: SKScene{
         
         moveCamera(rightScreenEdge: size.width)
         
-        /* The rightScreenEdge variable represents the size of the level
-         If the rightScreenEdge is different than size.width, then to add parallax and camera moviment, in every level the uptade func must be overriten as follow:
-         
-        override func update(_ currentTime: TimeInterval) {
-            super.update(currentTime)
-            moveCamera(rightScreenEdge: LEVEL SIZE)
-        }
-
-        */
-        
+        updateFog()
     }
     
     //MARK: Character Moviments
@@ -334,7 +391,6 @@ class LevelGameScene: SKScene{
         
         //Compare previous and current state
         if currentCharacterState != previousCharacterState {
-            characterImage.removeAllActions()
             
             if currentCharacterState == .walking {
                 setCharacterState = .walking
@@ -358,7 +414,7 @@ class LevelGameScene: SKScene{
         maxDx = screenSize.width/6
         
         // How fast to move the node. Adjust as needed
-        let speed: CGFloat = 0.018
+        let speed: CGFloat = 0.012
         
         // Compute vector components in direction of the touch
         dx = fingerLocation.x - center.x
@@ -391,27 +447,28 @@ class LevelGameScene: SKScene{
         switch setCharacterState {
         case .idle:
             sound = SKAction.wait(forDuration: 0.001)
-            idleCharacter(&frames)
+            frames = idleFrames
         case .jumping:
             sound = SKAction.wait(forDuration: 0.001)
-            jumpingCharacter(&frames)
+            frames = jumpFrames
         case .running:
             sound = music.playRun()
-            runningCharacter(&frames)
+            frames = runFrames
         case .walking:
             sound = music.playWalk()
-            walkingCharacter(&frames)
+            frames = walkFrames
+        case .dead:
+            frames = deadFrames
         case.climbing:
-            idleCharacter(&frames) //TODO: change to climbing frames
+            frames = ladderFrames
         }
         
         characterFrames = frames
         let firstFrameTexture = characterFrames[0]
         characterImage.texture = firstFrameTexture
-        
 
         let animate = SKAction.animate(with: characterFrames,
-                                                              timePerFrame: 0.1,
+                                                              timePerFrame: 0.025,
                                                               resize: false,
                                                               restore: true)
         
@@ -424,84 +481,6 @@ class LevelGameScene: SKScene{
         characterImage.removeAction(forKey: "AnimatedWithSound")
         //Animate character
         characterImage.run(group, withKey: "AnimatedWithSound")
-    }
-    
-    fileprivate func idleCharacter(_ frames: inout [SKTexture]) {
-        let characterTexture = SKTextureAtlas(dictionary: [
-            "Idle1": UIImage(named: "Idle_01")!,
-            "Idle2": UIImage(named: "Idle_02")!,
-            "Idle3": UIImage(named: "Idle_03")!,
-            "Idle4": UIImage(named: "Idle_04")!,
-            "Idle5": UIImage(named: "Idle_05")!,
-            "Idle6": UIImage(named: "Idle_06")!,
-            "Idle7": UIImage(named: "Idle_07")!,
-            "Idle8": UIImage(named: "Idle_08")!,
-            "Idle9": UIImage(named: "Idle_09")!,
-            "Idle10": UIImage(named: "Idle_010")!,
-            "Idle11": UIImage(named: "Idle_011")!,
-            "Idle12": UIImage(named: "Idle_012")!])
-        
-        let numImages = characterTexture.textureNames.count
-        for i in 1...numImages {
-            let characterTextureName = "Idle\(i)"
-            frames.append(characterTexture.textureNamed(characterTextureName))
-        }
-    }
-    
-    fileprivate func jumpingCharacter(_ frames: inout [SKTexture]) {
-        let characterTexture = SKTextureAtlas(dictionary: [
-            "Jump1": UIImage(named: "Jump-hero01_001")!,
-            "Jump2": UIImage(named: "Jump-hero01_002")!,
-            "Jump3": UIImage(named: "Jump-hero01_003")!,
-            "Jump4": UIImage(named: "Jump-hero01_004")!,
-            "Jump5": UIImage(named: "Jump-hero01_005")!,
-            "Jump6": UIImage(named: "Jump-hero01_006")!,
-            "Jump7": UIImage(named: "Jump-hero01_007")!,
-            "Jump8": UIImage(named: "Jump-hero01_008")!,
-            "Jump9": UIImage(named: "Jump-hero01_009")!])
-        
-        let numImages = characterTexture.textureNames.count
-        for i in 1...numImages {
-            let characterTextureName = "Jump\(i)"
-            frames.append(characterTexture.textureNamed(characterTextureName))
-        }
-    
-    }
-    
-    fileprivate func runningCharacter(_ frames: inout [SKTexture]) {
-        let characterTexture = SKTextureAtlas(dictionary: [
-            "Run1": UIImage(named: "Running_01")!,
-            "Run2": UIImage(named: "Running_02")!,
-            "Run3": UIImage(named: "Running_03")!,
-            "Run4": UIImage(named: "Running_04")!,
-            "Run5": UIImage(named: "Running_05")!,
-            "Run6": UIImage(named: "Running_06")!,
-            "Run7": UIImage(named: "Running_07")!])
-        
-        let numImages = characterTexture.textureNames.count
-        for i in 1...numImages {
-            let characterTextureName = "Run\(i)"
-            frames.append(characterTexture.textureNamed(characterTextureName))
-        }
-    }
-    
-    fileprivate func walkingCharacter(_ frames: inout [SKTexture]) {
-        let characterTexture = SKTextureAtlas(dictionary: [
-            "Walk1": UIImage(named: "Walking_01")!,
-            "Walk2": UIImage(named: "Walking_02")!,
-            "Walk3": UIImage(named: "Walking_03")!,
-            "Walk4": UIImage(named: "Walking_04")!,
-            "Walk5": UIImage(named: "Walking_05")!,
-            "Walk6": UIImage(named: "Walking_06")!,
-            "Walk7": UIImage(named: "Walking_07")!,
-            "Walk8": UIImage(named: "Walking_08")!,
-            "Walk9": UIImage(named: "Walking_09")!])
-        
-        let numImages = characterTexture.textureNames.count
-        for i in 1...numImages {
-            let characterTextureName = "Walk\(i)"
-            frames.append(characterTexture.textureNamed(characterTextureName))
-        }
     }
     
     func restart(levelWithFileNamed: String){
@@ -606,8 +585,9 @@ class LevelGameScene: SKScene{
         let backgroundsSpeed = [background1Speed, background2Speed, background3Speed, background4Speed]
         
         //Parallax in x direction
-        if previousCameraPosition.x != currentCameraPosition.x {
-            
+        // 0.35 calibrated by experimenting gameplay
+        if abs(previousCameraPosition.x - currentCameraPosition.x) > 0.35 {
+        
             //To let the background still while camera is moving
             let cameraMovimentX = (currentCameraPosition.x - previousCameraPosition.x)
             
@@ -618,6 +598,34 @@ class LevelGameScene: SKScene{
                 backgrounds[i].position = CGPoint(x: moveX, y: backgrounds[i].position.y)
             }
         }
+    }
+    
+    //MARK: Fog
+    func createFog() {
+        fog1.anchorPoint = CGPoint.zero
+        fog1.position = CGPoint(x: 0, y: 0)
+        fog1.zPosition = -5
+        self.addChild(fog1)
+        
+        fog2.anchorPoint = CGPoint.zero
+        fog2.position = CGPoint(x: fog1.size.width, y: 0)
+        fog2.zPosition = -5
+        self.addChild(fog2)
+    }
+    
+    func updateFog() {
+        fog1.position = CGPoint(x: fog1.position.x - 1.5, y: fog1.position.y)
+        fog2.position = CGPoint(x: fog2.position.x - 1.5, y: fog2.position.y)
+        
+        if fog1.position.x < -fog1.size.width {
+            fog1.position = CGPoint(x: fog1.position.x + fog1.size.width + fog2.size.width, y: fog2.position.y  )
+        }
+        
+        if fog2.position.x < -fog2.size.width {
+            fog2.position = CGPoint(x: fog2.position.x + fog2.size.width + fog1.size.width, y: fog1.position.y)
+            
+        }
+        
     }
     
 }
