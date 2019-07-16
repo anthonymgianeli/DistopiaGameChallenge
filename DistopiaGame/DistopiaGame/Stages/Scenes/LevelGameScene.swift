@@ -20,12 +20,8 @@ struct ColliderType {
     static let Door: UInt32 = 64
     static let Camera: UInt32 = 128
     static let Laser: UInt32 = 256
-<<<<<<< HEAD
     static let WinningFlag: UInt32 = 512
     static let Wall: UInt32 = 1024
-=======
-    static let Wall: UInt32 = 512
->>>>>>> Luma
 }
 
 
@@ -124,7 +120,7 @@ class LevelGameScene: SKScene{
         
         buildCharacter() //first image and character state
         setUpCamera() //camera to move in the screen
-//        setUpBackground() //backgrounds to form the parallax
+        setUpBackground() //backgrounds to form the parallax
 
         self.view?.isMultipleTouchEnabled = true
         
@@ -221,12 +217,8 @@ class LevelGameScene: SKScene{
                         self.characterImage.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 70))
                     }
                     let wait = SKAction.wait(forDuration: 1.0)
-<<<<<<< HEAD
-
-=======
                     let sound = music.playJump()
                     let group = SKAction.group([wait, sound])
->>>>>>> Luma
                     let jumpEnd = SKAction.run {
                         self.isJumping = false
                         self.setCharacterState = self.previousCharacterState
@@ -234,10 +226,6 @@ class LevelGameScene: SKScene{
                     let jump = SKAction.sequence([jumpStart, jumpAction, group, jumpEnd])
                     characterImage.run(jump)
                 }
-                
-//                let deltaX = touchEndedLocation.x - touchBeganLocation.x
-//                let deltaY = touchEndedLocation.y - touchBeganLocation.y
-                
 
                 
             } else if endedTouchOnScreen == "notValidTouch" {
