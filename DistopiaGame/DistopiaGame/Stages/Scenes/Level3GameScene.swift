@@ -39,14 +39,7 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate{
         super.update(currentTime)
 
         moveCamera(rightScreenEdge: 1475)
-//        if isMoving{
-//            print(crate?.position)
-//        }
-//        if isPushing && (crate?.position.x)! < 0 && direction < 0 {
-//            holdOrLeaveFunc()
-//        }else if isPushing && (crate?.position.x)! < 0 && direction > 0{
-//            holdOrLeaveFunc()
-//        }
+
         if characterImage.position.x > (door?.frame.maxX)!  + 40 {
             restart(levelWithFileNamed: "Level2GameScene")
         }
@@ -55,13 +48,6 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate{
     
     override func didMove(to view: SKView) {
         super.didMove(to: view)
-        
-//        //Gestures
-//        holdOrLeaveCrateGesture = UITapGestureRecognizer(target: self, action: #selector(holdOrLeaveCrate(_:)))
-//        holdOrLeaveCrateGesture.numberOfTapsRequired = 1
-//        holdOrLeaveCrateGesture.numberOfTouchesRequired = 1
-        
-        
         
         //Door Actions
         liftDoor = SKAction.moveBy(x: 0, y: 150, duration: 0.5)
@@ -85,7 +71,7 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate{
         let physicsBody =  SKPhysicsBody.init(rectangleOf: CGSize(width: 50, height: 50))
         physicsBody.isDynamic = true
         physicsBody.affectedByGravity = true
-        physicsBody.allowsRotation = true
+        physicsBody.allowsRotation = false
         physicsBody.pinned = false
         physicsBody.restitution = 0
         physicsBody.mass = 0.011
@@ -116,20 +102,6 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate{
         self.crate!.physicsBody?.contactTestBitMask = ColliderType.Character | ColliderType.PressurePlate
         
     }
-    
-//    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        super.touchesMoved(touches, with: event)
-//        for touch in touches {
-//            if isCarrying && direction>0 {
-//                print(1)
-//                self.crate?.position =  CGPoint(x: characterImage.xScale * (self.characterImage.frame.maxX), y: characterImage.yScale * (self.characterImage.frame.minY))
-//            }
-//            else if isCarrying && direction<0 {
-//                print(-1)
-//                self.crate?.position = CGPoint(x: characterImage.xScale * (self.characterImage.frame.minX), y: characterImage.yScale * (self.characterImage.frame.minY))
-//            }
-//        }
-//    }
     
     
     
@@ -163,7 +135,8 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate{
         if ((contact.bodyA==self.crate?.physicsBody && contact.bodyB==super.characterImage.physicsBody) || (contact.bodyA==super.characterImage.physicsBody && contact.bodyB==self.crate?.physicsBody)) && !isTouchingCrate{
             isTouchingCrate = true
             if isTouchingCrate{
-                self.view?.addGestureRecognizer(holdOrLeaveCrateGesture)
+                if (characterImage.position.y + characterImage.frame.height/2 < (stairs?.position.y)! + (stairs?.size.height)!/2){
+                    super.isCharacterAboveStairs = false                }
             }
         }
         
@@ -230,51 +203,6 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate{
             }
         }
     }
-    
-//    fileprivate func holdOrLeaveFunc() {
-//        if !super.isPushing{
-//            super.isPushing = true
-//            if let crate = self.crate {
-//                crate.removeFromParent()
-//                self.characterImage.addChild(crate)
-//
-//                crate.position = CGPoint(x: 150.317, y: -82.865)
-//
-//
-//                self.crate?.xScale = 1/characterImage.xScale
-//                self.crate?.yScale = 1/characterImage.yScale
-//                self.crate?.physicsBody?.pinned = true
-//            }
-//            if crateIsTouchingPressurePlate{
-//                crateIsTouchingPressurePlate = false
-//                self.door?.run(unliftDoor)
-//            }
-//        }
-//
-//        else {
-//            super.isPushing = false
-//            if let crate = self.crate {
-//                crate.removeFromParent()
-//                self.scene?.addChild(crate)
-//
-//                if direction<0{
-//                    self.crate?.position = CGPoint(x: self.characterImage.position.x + self.characterImage.frame.width, y: characterImage.frame.midY)
-//                }
-//                else{
-//                    self.crate?.position = CGPoint(x: self.characterImage.position.x - self.characterImage.frame.width, y: characterImage.frame.midY)
-//                }
-//                self.crate?.setScale(1)
-//                self.crate?.physicsBody?.pinned = false
-//            }
-//        }
-//    }
-    
-//    @objc func holdOrLeaveCrate(_ sender: UITapGestureRecognizer){
-//
-//        if (sender.location(in: view).x) > middleScreen{
-//            holdOrLeaveFunc()
-//        }
-//    }
     
     
 }
