@@ -13,8 +13,8 @@ import SpriteKit
 class Music {
     var audioPlayer = AVAudioPlayer()
     var clickAudio = SKAction.playSoundFileNamed("Click.wav", waitForCompletion: false)
-    var walkAudio = SKAction.playSoundFileNamed("Click.wav", waitForCompletion: false)
-    var runAudio = SKAction.playSoundFileNamed("Click.wav", waitForCompletion: false)
+    var walkAudio = SKAction.playSoundFileNamed("Walk-echo-trecho.wav", waitForCompletion: false)
+    var runAudio = SKAction.playSoundFileNamed("Run-echo-trecho.wav", waitForCompletion: false)
     var deathAudio = SKAction.playSoundFileNamed("Death.wav", waitForCompletion: false)
     var jumpAudio = SKAction.playSoundFileNamed("Jump.wav", waitForCompletion: false)
 
