@@ -20,6 +20,8 @@ struct ColliderType {
     static let Door: UInt32 = 64
     static let Camera: UInt32 = 128
     static let Laser: UInt32 = 256
+    static let WinningFlag: UInt32 = 512
+    static let Wall: UInt32 = 1024
 }
 
 
@@ -36,6 +38,7 @@ class LevelGameScene: SKScene{
         case running
         case jumping
         case walking
+        case climbing
     }
     
     var characterImage = SKSpriteNode()
@@ -59,6 +62,12 @@ class LevelGameScene: SKScene{
     var isWalking = false
     var isRunning = false
     var isJumping = false
+    var isClimbing = false
+    var isTouchingStairs = false
+    var isCharacterAboveStairs = false
+    var isPushing = false
+
+    var stairHeight:CGFloat = 0
     
     //MARK: Touches variables
     var fingerLocation = CGPoint.zero
@@ -75,6 +84,11 @@ class LevelGameScene: SKScene{
     //Handle "secondHalfOfScreen" gestures
     var jump = UISwipeGestureRecognizer()
     var carry = UILongPressGestureRecognizer()
+    var climbStart = SKAction()
+    var climbAction = SKAction()
+    var wait = SKAction()
+    var climbEnd = SKAction()
+    var climbSequence = SKAction()
     
     //MARK: Background variables
     var background1 = SKSpriteNode()
@@ -99,11 +113,12 @@ class LevelGameScene: SKScene{
         physicsBody.allowsRotation = false
         physicsBody.pinned = false
         physicsBody.restitution = 0
+        physicsBody.mass = 0.1133
         self.characterImage.physicsBody = physicsBody
         
         buildCharacter() //first image and character state
         setUpCamera() //camera to move in the screen
-        setUpBackground() //backgrounds to form the parallax
+//        setUpBackground() //backgrounds to form the parallax
 
         self.view?.isMultipleTouchEnabled = true
     }
@@ -153,28 +168,58 @@ class LevelGameScene: SKScene{
                 setCharacterState = .idle
             //Character jump and interaction
             } else if endedTouchOnScreen == "secondHalfOfScreen" {
+                
                 //CORRECT JUMP - THIS IS JUST FOR SCREEN TEST
-                if touchBeganLocation.y - touchEndedLocation.y > screenSize.height / 4 {
+                if isTouchingStairs && !isCharacterAboveStairs && !isPushing && touchBeganLocation.y - touchEndedLocation.y > screenSize.height / 4 {
+                    //Climb Actions
+                    climbStart = SKAction.run {
+                        self.isClimbing = true
+                        self.setCharacterState = .climbing
+                    }
+                    climbAction = SKAction.moveBy(x: 0, y: stairHeight, duration: 1)
+                    wait = SKAction.wait(forDuration: 1.0)
+                    climbEnd = SKAction.run {
+                        self.isClimbing = false
+                        self.setCharacterState = self.previousCharacterState
+                    }
+                    climbSequence = SKAction.sequence([climbStart, climbAction, wait, climbEnd])
+                    
+                    characterImage.run(climbSequence)
+                }
+                else if isTouchingStairs && isCharacterAboveStairs && !isPushing && touchBeganLocation.y - touchEndedLocation.y < screenSize.height / 4 {
+                    
+                    characterImage.physicsBody?.collisionBitMask = ColliderType.Ground | ColliderType.Crate | ColliderType.WinningFlag | ColliderType.Door
+                    //Climb Down Actions
+                    climbStart = SKAction.run {
+                        self.isClimbing = true
+                        self.setCharacterState = .climbing
+                    }
+                    climbAction = SKAction.moveBy(x: 0, y: -stairHeight, duration: 1)
+                    wait = SKAction.wait(forDuration: 1.0)
+                    climbEnd = SKAction.run {
+                        self.isClimbing = false
+                        self.setCharacterState = self.previousCharacterState
+                    }
+                    climbSequence = SKAction.sequence([climbStart, climbAction, wait, climbEnd])
+                    
+                    characterImage.run(climbSequence)
+                }
+                else if touchBeganLocation.y - touchEndedLocation.y > screenSize.height / 4 && !isPushing {
                     let jumpStart = SKAction.run {
                         self.isJumping = true
                         self.setCharacterState = .jumping
                     }
-<<<<<<< HEAD
                     let jumpAction = SKAction.run {
                         self.characterImage.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 70))
                     }
                     let wait = SKAction.wait(forDuration: 1.0)
-=======
-                    let jumpUp = SKAction.moveBy(x: 0, y: 20, duration: 0.5)
-                    let jumpDown = SKAction.moveBy(x: 0, y: -20, duration: 0.5)
->>>>>>> Level3
+
                     let jumpEnd = SKAction.run {
                         self.isJumping = false
                         self.setCharacterState = self.previousCharacterState
                     }
                     let jump = SKAction.sequence([jumpStart, jumpAction, wait, jumpEnd])
                     characterImage.run(jump)
-
                 }
                 
 //                let deltaX = touchEndedLocation.x - touchBeganLocation.x
@@ -349,6 +394,8 @@ class LevelGameScene: SKScene{
             runningCharacter(&frames)
         case .walking:
             walkingCharacter(&frames)
+        case.climbing:
+            idleCharacter(&frames) //TODO: change to climbing frames
         }
         
         characterFrames = frames
