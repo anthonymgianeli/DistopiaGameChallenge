@@ -24,7 +24,6 @@ class Level1GameViewController: UIViewController {
                 // Present the scene
                 view.presentScene(scene)
             }
-            
             view.ignoresSiblingOrder = true
             view.showsFPS = false
             view.showsNodeCount = false

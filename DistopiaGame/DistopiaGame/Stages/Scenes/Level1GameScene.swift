@@ -30,11 +30,12 @@ class Level1GameScene: LevelGameScene, SKPhysicsContactDelegate {
     var secretDoor = SKSpriteNode()
     
     var isTouchingSpikes: Bool = false
-    var isTouchingPaper1: Bool = false
-    var isTouchingPaper2: Bool = false
-    var isTouchingPaper3: Bool = false
     var isTouchingLever: Bool = false
     var isLeverUP: Bool = false
+    
+    var isPaper1Removed: Bool = false
+    var isPaper2Removed: Bool = false
+    var isPaper3Removed: Bool = false
     
     var collectItem = UITapGestureRecognizer()
     var numItemsCollected = 0
@@ -148,7 +149,7 @@ class Level1GameScene: LevelGameScene, SKPhysicsContactDelegate {
     override func update(_ currentTime: TimeInterval) {
         super.update(currentTime)
         
-        moveCamera(rightScreenEdge: size.width * 2)
+        moveCamera(rightScreenEdge: size.width * 2 + door.size.width)
         
         if numItemsCollected == 3 && !isDoorLifted {
             door.run(liftDoor)
@@ -212,19 +213,7 @@ class Level1GameScene: LevelGameScene, SKPhysicsContactDelegate {
             isWalking = false
             isJumping = false
             
-            let deadAnimation = SKAction.run {
-                super.previousCharacterState = .dead
-                super.setCharacterState = .dead
-                self.characterImage.physicsBody = SKPhysicsBody.init(rectangleOf: CGSize(width: 60, height: 15))
-            }
-            let wait = SKAction.wait(forDuration: 0.9)
-            let restart = SKAction.run {
-                super.restart(levelWithFileNamed: "Level1GameScene")
-                self.isTouchingSpikes = false
-            }
-            
-            let deadSequence = SKAction.sequence([deadAnimation, wait, restart])
-            super.characterImage.run(deadSequence)
+            deadCharacter(inLevel: "Level1GameScene")
         }
         
         //Stairs contact - climb
@@ -263,23 +252,7 @@ class Level1GameScene: LevelGameScene, SKPhysicsContactDelegate {
                 isWalking = false
                 isJumping = false
                 
-                let deadAnimation = SKAction.run {
-                    super.previousCharacterState = .dead
-                    super.setCharacterState = .dead
-                    
-                }
-                let waitToCorectPhysicsBody = SKAction.wait(forDuration: 0.5)
-                let changePhysicsBody = SKAction.run {
-                    self.characterImage.physicsBody = SKPhysicsBody.init(rectangleOf: CGSize(width: 60, height: 15))
-                }
-                let wait = SKAction.wait(forDuration: 0.9)
-                let restart = SKAction.run {
-                    super.restart(levelWithFileNamed: "Level1GameScene")
-                    self.isTouchingSpikes = false
-                }
-                
-                let deadSequence = SKAction.sequence([deadAnimation, waitToCorectPhysicsBody, changePhysicsBody, wait, restart])
-                super.characterImage.run(deadSequence)
+                deadCharacter(inLevel: "Level1GameScene")
             }
             
             isCharacterAboveStairs = false
@@ -294,18 +267,24 @@ class Level1GameScene: LevelGameScene, SKPhysicsContactDelegate {
         }
         
         //Collectable contact - paper 1
-        if ((contact.bodyA == bodyA && contact.bodyB == bodyI) || (contact.bodyB == bodyA && contact.bodyA == bodyI)) {
-            isTouchingPaper1 = true
+        if ((contact.bodyA == bodyA && contact.bodyB == bodyI) || (contact.bodyB == bodyA && contact.bodyA == bodyI)) && !isPaper1Removed {
+            paper1.removeFromParent()
+            numItemsCollected += 1
+            isPaper1Removed = true
         }
         
         //Collectable contact - paper 2
-        if ((contact.bodyA == bodyA && contact.bodyB == bodyJ) || (contact.bodyB == bodyA && contact.bodyA == bodyJ)) {
-            isTouchingPaper2 = true
+        if ((contact.bodyA == bodyA && contact.bodyB == bodyJ) || (contact.bodyB == bodyA && contact.bodyA == bodyJ)) && !isPaper2Removed {
+            paper2.removeFromParent()
+            numItemsCollected += 1
+            isPaper2Removed = true
         }
         
         //Collectable contact - paper 3
-        if ((contact.bodyA == bodyA && contact.bodyB == bodyK) || (contact.bodyB == bodyA && contact.bodyA == bodyK)) {
-            isTouchingPaper3 = true
+        if ((contact.bodyA == bodyA && contact.bodyB == bodyK) || (contact.bodyB == bodyA && contact.bodyA == bodyK)) && !isPaper3Removed{
+            paper3.removeFromParent()
+            numItemsCollected += 1
+            isPaper3Removed = true
         }
         
         //Paper 3 and ground/stairs 2
@@ -328,9 +307,6 @@ class Level1GameScene: LevelGameScene, SKPhysicsContactDelegate {
         let bodyA = characterImage.physicsBody
         let bodyD = stairs1.physicsBody
         let bodyE = stairs2.physicsBody
-        let bodyI = paper1.physicsBody
-        let bodyJ = paper2.physicsBody
-        let bodyK = paper3.physicsBody
         let bodyL = lever.physicsBody
         
         
@@ -368,21 +344,6 @@ class Level1GameScene: LevelGameScene, SKPhysicsContactDelegate {
             }
         }
         
-        //Collectable contact - paper 1
-        if ((contact.bodyA == bodyA && contact.bodyB == bodyI) || (contact.bodyB == bodyA && contact.bodyA == bodyI)) && isTouchingPaper1 {
-            isTouchingPaper1 = false
-        }
-        
-        //Collectable contact - paper 2
-        if ((contact.bodyA == bodyA && contact.bodyB == bodyJ) || (contact.bodyB == bodyA && contact.bodyA == bodyJ)) && isTouchingPaper2 {
-            isTouchingPaper2 = false
-        }
-        
-        //Collectable contact - paper 3
-        if ((contact.bodyA == bodyA && contact.bodyB == bodyK) || (contact.bodyB == bodyA && contact.bodyA == bodyK)) && isTouchingPaper3 {
-            isTouchingPaper3 = false
-        }
-        
         //Lever
         if ((contact.bodyA == bodyA && contact.bodyB == bodyL) || (contact.bodyB == bodyA && contact.bodyA == bodyL)) && isTouchingLever {
             isTouchingLever = false
@@ -390,18 +351,6 @@ class Level1GameScene: LevelGameScene, SKPhysicsContactDelegate {
     }
     
     @objc func doubleTap(_ sender: UITapGestureRecognizer) {
-        
-        if isTouchingPaper1 {
-            paper1.isHidden = true
-            numItemsCollected += 1
-        } else if isTouchingPaper2 {
-            paper2.isHidden = true
-            numItemsCollected += 1
-        } else if isTouchingPaper3 {
-            paper3.isHidden = true
-            numItemsCollected += 1
-        }
-        
         if isTouchingLever && !isLeverUP {
             lever.texture = SKTexture(imageNamed: "Level 1 Assets/leverUp")
             isLeverUP = true
@@ -412,6 +361,18 @@ class Level1GameScene: LevelGameScene, SKPhysicsContactDelegate {
             paper3.isHidden = false
             
             let rotateSecretDoor = SKAction.rotate(byAngle: -(.pi/6), duration: 2.0)
+            secretDoor.run(rotateSecretDoor)
+            
+        } else if isTouchingLever && isLeverUP {
+            lever.texture = SKTexture(imageNamed: "Level 1 Assets/lever")
+            isLeverUP = false
+            
+            paper3.physicsBody?.isDynamic = true
+            paper3.physicsBody?.affectedByGravity = true
+            paper3.physicsBody?.allowsRotation = true
+            paper3.isHidden = false
+            
+            let rotateSecretDoor = SKAction.rotate(byAngle: (.pi/6), duration: 2.0)
             secretDoor.run(rotateSecretDoor)
         }
  

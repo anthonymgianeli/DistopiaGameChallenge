@@ -629,5 +629,21 @@ class LevelGameScene: SKScene {
         
     }
     
+    func deadCharacter(inLevel: String) {
+        let deadAnimation = SKAction.run {
+            self.previousCharacterState = .dead
+            self.setCharacterState = .dead
+            self.characterImage.physicsBody = SKPhysicsBody.init(rectangleOf: CGSize(width: 60, height: 15))
+        }
+        let sound = music.playDeath()
+        let wait = SKAction.wait(forDuration: 1.2)
+        let restartAction = SKAction.run {
+            self.restart(levelWithFileNamed: inLevel)
+        }
+        
+        let deadSequence = SKAction.sequence([deadAnimation, sound, wait, restartAction])
+        characterImage.run(deadSequence)
+    }
+    
 }
 

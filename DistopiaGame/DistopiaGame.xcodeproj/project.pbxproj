@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B6B187122DF858500F1050C /* Death.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0B6B187022DF858500F1050C /* Death.wav */; };
 		0B93481422DCA4CB008332BF /* LoadGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93481322DCA4CB008332BF /* LoadGame.swift */; };
 		0B93481822DCD8AE008332BF /* LoadGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93481722DCD8AE008332BF /* LoadGameViewController.swift */; };
 		0B93481A22DCDB56008332BF /* LoadGame.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0B93481922DCDB56008332BF /* LoadGame.sks */; };
 		0BAB9CF122CE7BE500E84E72 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAB9CF022CE7BE500E84E72 /* Player.swift */; };
 		0BAB9CF522CE876500E84E72 /* LevelGameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAB9CF422CE876500E84E72 /* LevelGameScene.swift */; };
 		0BEAA66322DE638D00756A35 /* Walk-echo-trecho.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0BEAA66022DE638D00756A35 /* Walk-echo-trecho.wav */; };
-		0BEAA66422DE638D00756A35 /* Death.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0BEAA66122DE638D00756A35 /* Death.wav */; };
 		0BEAA66522DE638D00756A35 /* Jump.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0BEAA66222DE638D00756A35 /* Jump.wav */; };
 		0BEAA66722DE63A800756A35 /* Run-echo-trecho.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0BEAA66622DE63A800756A35 /* Run-echo-trecho.wav */; };
 		0BF13B9922CBB1AF007DACD8 /* Level1GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0BF13B9822CBB1AF007DACD8 /* Level1GameScene.sks */; };
@@ -52,13 +52,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0B6B187022DF858500F1050C /* Death.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Death.wav; sourceTree = "<group>"; };
 		0B93481322DCA4CB008332BF /* LoadGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadGame.swift; sourceTree = "<group>"; };
 		0B93481722DCD8AE008332BF /* LoadGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadGameViewController.swift; sourceTree = "<group>"; };
 		0B93481922DCDB56008332BF /* LoadGame.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LoadGame.sks; sourceTree = "<group>"; };
 		0BAB9CF022CE7BE500E84E72 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		0BAB9CF422CE876500E84E72 /* LevelGameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelGameScene.swift; sourceTree = "<group>"; };
 		0BEAA66022DE638D00756A35 /* Walk-echo-trecho.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Walk-echo-trecho.wav"; sourceTree = "<group>"; };
-		0BEAA66122DE638D00756A35 /* Death.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Death.wav; sourceTree = "<group>"; };
 		0BEAA66222DE638D00756A35 /* Jump.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Jump.wav; sourceTree = "<group>"; };
 		0BEAA66622DE63A800756A35 /* Run-echo-trecho.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Run-echo-trecho.wav"; sourceTree = "<group>"; };
 		0BF13B9822CBB1AF007DACD8 /* Level1GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Level1GameScene.sks; sourceTree = "<group>"; };
@@ -136,8 +136,8 @@
 			isa = PBXGroup;
 			children = (
 				0BEAA66622DE63A800756A35 /* Run-echo-trecho.wav */,
-				0BEAA66122DE638D00756A35 /* Death.wav */,
 				0BEAA66222DE638D00756A35 /* Jump.wav */,
+				0B6B187022DF858500F1050C /* Death.wav */,
 				0BEAA66022DE638D00756A35 /* Walk-echo-trecho.wav */,
 				15F29E6B22DBB523005F1B75 /* Click.wav */,
 				15F29E6522DBAA82005F1B75 /* BackgroundSound.mp3 */,
@@ -338,10 +338,10 @@
 				15F29E6C22DBB523005F1B75 /* Click.wav in Resources */,
 				3CBF82EF22CA39F40089A5BE /* Main.storyboard in Resources */,
 				3CBF830C22CBA1D30089A5BE /* Level3.xcassets in Resources */,
+				0B6B187122DF858500F1050C /* Death.wav in Resources */,
 				0BF13B9922CBB1AF007DACD8 /* Level1GameScene.sks in Resources */,
 				3CBF831822CBA3C40089A5BE /* Level2GameScene.sks in Resources */,
 				3CBF831022CBA27D0089A5BE /* Level1.plist in Resources */,
-				0BEAA66422DE638D00756A35 /* Death.wav in Resources */,
 				3CBF832A22CBA6390089A5BE /* Security.plist in Resources */,
 				0BF13BA322CBB2C8007DACD8 /* Player.xcassets in Resources */,
 				3CBF82F122CA39F60089A5BE /* Images.xcassets in Resources */,

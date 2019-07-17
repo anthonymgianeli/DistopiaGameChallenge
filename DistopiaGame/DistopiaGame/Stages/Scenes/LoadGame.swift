@@ -132,18 +132,29 @@ func animateAssets() {
 
 class LoadGame: SKScene {
     
+    var background = SKSpriteNode()
+    
     override func didMove(to view: SKView) {
-        backgroundColor = SKColor.black
+        self.background = childNode(withName: "background") as! SKSpriteNode
         
         animateAssets()
         firstLevel()
     }
     
-    func firstLevel(){
-        let firstLevel = Level1GameScene(fileNamed: "Level1GameScene")!
-        firstLevel.scaleMode = scaleMode
-        let reveal = SKTransition.fade(with: .black, duration: 0.5)
-        view?.presentScene(firstLevel, transition: reveal)
+    func firstLevel() {
+        
+        let firstLevelAnimation = SKAction.run {
+            let firstLevel = Level1GameScene(fileNamed: "Level1GameScene")!
+            firstLevel.scaleMode = self.scaleMode
+            let reveal = SKTransition.fade(with: .black, duration: 2.0)
+            self.view?.presentScene(firstLevel, transition: reveal)
+        }
+        let wait = SKAction.wait(forDuration: 3.0)
+        let sequence = SKAction.sequence([wait, firstLevelAnimation])
+        
+        background.run(sequence)
     }
+    
+    
     
 }

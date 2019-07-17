@@ -49,6 +49,8 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate{
     override func didMove(to view: SKView) {
         super.didMove(to: view)
         
+        view.isUserInteractionEnabled = true
+        
         //Door Actions
         liftDoor = SKAction.moveBy(x: 0, y: 150, duration: 0.5)
         unliftDoor = SKAction.moveBy(x: 0, y: -150, duration: 0.5)
@@ -110,10 +112,16 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate{
     func didBegin(_ contact: SKPhysicsContact) {
         
         if ((contact.bodyA==super.characterImage.physicsBody && contact.bodyB==self.spikes?.physicsBody) || (contact.bodyA==self.spikes?.physicsBody && contact.bodyB==super.characterImage.physicsBody)) && !isTouchingSpikes{
+ 
             isTouchingSpikes = true
-            if isTouchingSpikes{
-                super.restart(levelWithFileNamed: "Level3")
-            }
+            isDead = true
+            view?.isUserInteractionEnabled = false
+            isMoving = false
+            isRunning = false
+            isWalking = false
+            isJumping = false
+            
+            deadCharacter(inLevel: "Level3")
         }
         
         
@@ -152,9 +160,17 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate{
         if ((contact.bodyA==super.characterImage.physicsBody && contact.bodyB==self.firstFloor?.physicsBody) || (contact.bodyA==self.firstFloor?.physicsBody && contact.bodyB==super.characterImage.physicsBody)){
             super.characterImage.physicsBody?.collisionBitMask = ColliderType.Ground | ColliderType.Crate | ColliderType.WinningFlag | ColliderType.Door | ColliderType.Wall
             
-            if isCharacterAboveStairs && !isTouchingStairs{
-                restart(levelWithFileNamed: "Level3")
+            if isCharacterAboveStairs && !isTouchingStairs {
+                isDead = true
+                view?.isUserInteractionEnabled = false
+                isMoving = false
+                isRunning = false
+                isWalking = false
+                isJumping = false
+                
+                deadCharacter(inLevel: "Level3")
             }
+            
             super.isCharacterAboveStairs = false
         }
         

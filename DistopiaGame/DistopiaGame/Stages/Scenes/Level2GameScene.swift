@@ -22,6 +22,8 @@ class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         super.didMove(to: view)
         
+        view.isUserInteractionEnabled = true
+        
         self.cameraAnchor = childNode(withName: "CameraAnchor") as? SKSpriteNode
         self.cameraImage = cameraAnchor!.childNode(withName: "CameraImage") as? SKSpriteNode
         self.cameraLaserBody = cameraAnchor!.childNode(withName: "CameraLaserBody") as? SKSpriteNode
@@ -57,7 +59,8 @@ class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
         //Verifica contato com o foco da camera, caso exista reinicia a fase
         if (contact.bodyA == self.cameraLaserBody?.physicsBody && contact.bodyB == super.characterImage.physicsBody) ||
             (contact.bodyA == super.characterImage.physicsBody && contact.bodyB == self.cameraLaserBody?.physicsBody) {
-            self.dieAndRestart()
+            
+            deadCharacter(inLevel: "Level2GameScene")
         }
         
         if (contact.bodyA == super.characterImage.physicsBody && contact.bodyB == self.ground?.physicsBody) ||
@@ -129,15 +132,6 @@ class Level2GameScene: LevelGameScene, SKPhysicsContactDelegate {
         if characterImage.position.x > (screenSize.width * 0.9) {
             restart(levelWithFileNamed: "Level1GameScene")
         } 
-    }
-    
-    func dieAndRestart() {
-        let deathSound = super.music.playDeath()
-        let restart = SKAction.run {
-            super.restart(levelWithFileNamed: "Level2GameScene")
-        }
-        let sequence = SKAction.sequence([deathSound, restart])
-        super.characterImage.run(sequence)
     }
 
 }
