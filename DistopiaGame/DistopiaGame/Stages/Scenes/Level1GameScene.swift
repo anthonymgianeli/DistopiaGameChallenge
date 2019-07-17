@@ -29,6 +29,10 @@ class Level1GameScene: LevelGameScene, SKPhysicsContactDelegate {
     var lever = SKSpriteNode()
     var secretDoor = SKSpriteNode()
     
+    var light1 = SKLightNode()
+    var light2 = SKLightNode()
+    var light3 = SKLightNode()
+    
     var isTouchingSpikes: Bool = false
     var isTouchingPaper1: Bool = false
     var isTouchingPaper2: Bool = false
@@ -64,6 +68,10 @@ class Level1GameScene: LevelGameScene, SKPhysicsContactDelegate {
         self.button = childNode(withName: "button") as! SKSpriteNode
         self.lever = childNode(withName: "lever") as! SKSpriteNode
         self.secretDoor = childNode(withName: "secretDoor") as! SKSpriteNode
+        
+        self.light1 = paper1.childNode(withName: "light1") as! SKLightNode
+        self.light2 = paper2.childNode(withName: "light2") as! SKLightNode
+        self.light3 = paper3.childNode(withName: "light3") as! SKLightNode
     
         let stairs1PhysicsBody =  SKPhysicsBody.init(rectangleOf: CGSize(width: 0.2 * stairs1.size.width, height: stairs1.size.height))
         stairs1PhysicsBody.isDynamic = false
@@ -109,6 +117,10 @@ class Level1GameScene: LevelGameScene, SKPhysicsContactDelegate {
         let rotateGear = SKAction.rotate(byAngle: .pi/2, duration: 0.7)
         let repeatRotation = SKAction.repeatForever(rotateGear)
         gear.run(repeatRotation)
+        
+        paper1.lightingBitMask = light1.categoryBitMask
+        paper2.lightingBitMask = light2.categoryBitMask
+        paper3.lightingBitMask = light3.categoryBitMask
         
         physicsWorld.contactDelegate = self
         characterImage.physicsBody?.categoryBitMask = ColliderType.Character

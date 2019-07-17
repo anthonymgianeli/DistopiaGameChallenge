@@ -120,7 +120,7 @@ class Level3GameScene: LevelGameScene, SKPhysicsContactDelegate{
         if ((contact.bodyA==super.characterImage.physicsBody && contact.bodyB==self.pressurePlate?.physicsBody) || (contact.bodyA==self.pressurePlate?.physicsBody && contact.bodyB==super.characterImage.physicsBody)) && !playerIsTouchingPressurePlate{
             playerIsTouchingPressurePlate = true
             if playerIsTouchingPressurePlate && !crateIsTouchingPressurePlate{
-                self.lampLight?.alpha = 1
+                self.lampLight?.alpha = 0.7
                 self.door?.run(liftDoor)
             }
         }
