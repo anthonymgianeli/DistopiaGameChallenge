@@ -26,8 +26,9 @@ struct ColliderType {
     static let Tubes: UInt32 = 4096
     static let Barrel: UInt32 = 8192
     static let WinningFlag: UInt32 = 16384
+    static let Collectable: UInt32 = 32768
+    static let Lever: UInt32 = 65536
 }
-
 
 //COMMON CLASS TO EVERY SCENE - CHARACTER HANDLING
 class LevelGameScene: SKScene {
@@ -35,7 +36,6 @@ class LevelGameScene: SKScene {
     var swipeUpActionDelegate: SwipeUpActionExecutor!
     
     //MARK: Character variables
-    
     //character state to animate
     enum CharacterState {
         case idle
@@ -128,7 +128,7 @@ class LevelGameScene: SKScene {
         stairHeight = screenSize.height
         
         self.characterImage = childNode(withName: "CharacterImage") as! SKSpriteNode
-        let physicsBody =  SKPhysicsBody.init(rectangleOf: CGSize(width: 20, height: 70))
+        let physicsBody =  SKPhysicsBody.init(rectangleOf: CGSize(width: 20, height: 60))
         physicsBody.isDynamic = true
         physicsBody.affectedByGravity = true
         physicsBody.allowsRotation = false
@@ -236,7 +236,7 @@ class LevelGameScene: SKScene {
                             self.isClimbingUp = true
                             self.setCharacterState = .climbing
                         }
-                        climbAction = SKAction.moveBy(x: 0, y: stairHeight - 10, duration: climblingDuration)
+                        climbAction = SKAction.moveBy(x: 0, y: stairHeight, duration: climblingDuration)
                         wait = SKAction.wait(forDuration: 0)
                         climbEnd = SKAction.run {
                             self.isClimbing = false
@@ -283,6 +283,7 @@ class LevelGameScene: SKScene {
                             self.isJumping = false
                             if self.isDead == true {
                                 self.setCharacterState = .dead
+                                self.characterImage.physicsBody = SKPhysicsBody.init(rectangleOf: CGSize(width: 60, height: 15))
                             } else {
                                 self.setCharacterState = self.previousCharacterState
                             }
@@ -414,7 +415,7 @@ class LevelGameScene: SKScene {
         maxDx = screenSize.width/6
         
         // How fast to move the node. Adjust as needed
-        let speed: CGFloat = 0.012
+        let speed: CGFloat = 0.015
         
         // Compute vector components in direction of the touch
         dx = fingerLocation.x - center.x
@@ -468,7 +469,7 @@ class LevelGameScene: SKScene {
         characterImage.texture = firstFrameTexture
 
         let animate = SKAction.animate(with: characterFrames,
-                                                              timePerFrame: 0.025,
+                                                              timePerFrame: 0.020,
                                                               resize: false,
                                                               restore: true)
         

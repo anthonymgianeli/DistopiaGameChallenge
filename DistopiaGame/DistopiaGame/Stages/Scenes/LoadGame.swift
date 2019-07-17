@@ -142,7 +142,7 @@ class LoadGame: SKScene {
     func firstLevel(){
         let firstLevel = Level1GameScene(fileNamed: "Level1GameScene")!
         firstLevel.scaleMode = scaleMode
-        let reveal = SKTransition.push(with: SKTransitionDirection.left, duration: 0.5)
+        let reveal = SKTransition.fade(with: .black, duration: 0.5)
         view?.presentScene(firstLevel, transition: reveal)
     }
     
